@@ -3,6 +3,8 @@ import { AuthService } from './auth.service';
 import { UserRegisterLoginDto } from './dto/user-register-login.dto';
 import { Response, Request } from 'express';
 
+type AccessToken = { accessToken: string };
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly AuthService: AuthService) {}
@@ -18,36 +20,36 @@ export class AuthController {
   async register(
     @Body() userRegisterLoginDto: UserRegisterLoginDto,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<string> {
+  ): Promise<AccessToken> {
     const { refreshToken, accessToken } = await this.AuthService.register(
       userRegisterLoginDto,
     );
     this.setCookie(response, refreshToken);
-    return accessToken;
+    return { accessToken };
   }
 
   @Post('login')
   async login(
     @Body() userRegisterLoginDto: UserRegisterLoginDto,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<string> {
+  ): Promise<AccessToken> {
     const { refreshToken, accessToken } = await this.AuthService.login(
       userRegisterLoginDto,
     );
     this.setCookie(response, refreshToken);
-    return accessToken;
+    return { accessToken };
   }
 
   @Get('refresh-tokens')
   async refreshToken(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<string> {
+  ): Promise<AccessToken> {
     const { refreshToken, accessToken } = await this.AuthService.refreshToken(
       request.cookies['refresh'],
     );
 
     this.setCookie(response, refreshToken);
-    return accessToken;
+    return { accessToken };
   }
 }
