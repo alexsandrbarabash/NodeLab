@@ -1,12 +1,19 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { Token } from './token.entities';
 
 @Entity()
+@Unique(['email'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: 'email' })
   email: string;
 
   @Column({ nullable: true })

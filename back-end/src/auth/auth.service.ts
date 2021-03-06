@@ -2,16 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserRegisterLoginDto } from './dto/user-register-login.dto';
-import { User } from './entities/user.entities';
-import { Token } from './entities/token.entities';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
-
-// export type AccessRefreshToken = {
-//   accessToken: string;
-//   refreshToken: string;
-// };
+import { User } from './entities/user.entities';
+import { Token } from './entities/token.entities';
 
 @Injectable()
 export class AuthService {
@@ -44,6 +39,7 @@ export class AuthService {
     const candidate = await this.usersRepository.findOne({
       email: userRegisterLoginDto.email,
     });
+
     if (candidate) {
       throw new HttpException('Incorrect data', HttpStatus.NOT_ACCEPTABLE);
     }
@@ -79,7 +75,22 @@ export class AuthService {
     return this.createToken(user);
   }
 
-  refreshToken(refreshToken) {
-    return 'refresh-token';
+  async refreshToken(refreshToken) {
+    const currentToken = await this.tokenRepository.findOne({
+      token: refreshToken,
+    });
+
+    if (!currentToken) {
+      throw new HttpException('Not a valid token', HttpStatus.NOT_FOUND);
+    }
+
+    const tokens = this.generationTokens(currentToken.user);
+
+    this.tokenRepository.save({
+      ...currentToken,
+      token: tokens.refreshToken,
+    });
+
+    return tokens;
   }
 }
