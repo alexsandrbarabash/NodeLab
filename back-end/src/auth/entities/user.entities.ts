@@ -19,6 +19,12 @@ export class User {
   @Column({ nullable: true })
   password: string;
 
+  @Column({ default: false })
+  isVerifiedEmail: boolean;
+
+  @Column({ default: false })
+  isGoogleAuthorization: boolean;
+
   @OneToMany(() => Token, (Token) => Token.token)
   token: Token;
 }

@@ -6,12 +6,37 @@ import { User } from './entities/user.entities';
 import { Token } from './entities/token.entities';
 import { JwtModule } from '@nestjs/jwt';
 import { config } from '../../config';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Token]),
     JwtModule.register({
       secret: config.secretKey,
+    }),
+    MailerModule.forRootAsync({
+      useFactory: () => ({
+        transport: {
+          host: 'smtp.ukr.net',
+          port: 465,
+          secure: true, // upgrade later with STARTTLS
+          auth: {
+            user: 'sbarabash2001@ukr.net',
+            pass: '5ANBF24ChLeZWSwB',
+          },
+        },
+        defaults: {
+          from: '"nest-modules" <modules@nestjs.com>',
+        },
+        template: {
+          dir: process.cwd() + '/templates/',
+          adapter: new PugAdapter(), // or new PugAdapter() or new EjsAdapter()
+          options: {
+            strict: true,
+          },
+        },
+      }),
     }),
   ],
   controllers: [AuthController],

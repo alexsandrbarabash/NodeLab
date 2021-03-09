@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entities';
 import { Token } from './entities/token.entities';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,25 @@ export class AuthService {
     private usersRepository: Repository<User>,
     @InjectRepository(Token)
     private tokenRepository: Repository<Token>,
+    private readonly mailerService: MailerService,
   ) {}
+
+  private example(): void {
+    this.mailerService
+      .sendMail({
+        to: 'sbarabas176@gmail.com', // list of receivers
+        from: 'sbarabash2001@ukr.net', // sender address
+        subject: 'Testing Nest MailerModule ✔', // Subject line
+        text: 'welcome', // plaintext body
+        html: '<b>welcome</b>', // HTML body content
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   private generationTokens(id: number) {
     const accessToken = this.jwtService.sign({ id });
@@ -36,6 +55,7 @@ export class AuthService {
   }
 
   async register(userRegisterLoginDto: UserRegisterLoginDto) {
+    // this.example();
     const candidate = await this.usersRepository.findOne({
       email: userRegisterLoginDto.email,
     });
@@ -73,6 +93,10 @@ export class AuthService {
     }
 
     return this.createToken(user);
+  }
+
+  verifiedEmail(id) {
+    return this.usersRepository.update(+id, { isVerifiedEmail: true });
   }
 
   async refreshToken(refreshToken) {

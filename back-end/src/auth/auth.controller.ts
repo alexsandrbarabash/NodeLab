@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Res, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Res,
+  Req,
+  Put,
+  Param,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserRegisterLoginDto } from './dto/user-register-login.dto';
 import { Response, Request } from 'express';
@@ -51,5 +60,10 @@ export class AuthController {
 
     this.setCookie(response, refreshToken);
     return { accessToken };
+  }
+  // возможно поміняти на body
+  @Put('verified-email/:id')
+  verifiedEmail(@Param('id') id: number) {
+    return this.AuthService.verifiedEmail(id);
   }
 }
