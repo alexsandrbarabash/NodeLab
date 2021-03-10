@@ -11,6 +11,7 @@ import {
 import { AuthService } from './auth.service';
 import { UserRegisterLoginDto } from './dto/user-register-login.dto';
 import { Response, Request } from 'express';
+import { UserGoogleRegisterLoginDto } from './dto/user-google-register-login.dto';
 
 type AccessToken = { accessToken: string };
 
@@ -25,25 +26,49 @@ export class AuthController {
     });
   }
 
-  @Post('register')
-  async register(
+  @Post('base-register')
+  async basicRegister(
     @Body() userRegisterLoginDto: UserRegisterLoginDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AccessToken> {
-    const { refreshToken, accessToken } = await this.AuthService.register(
+    const { refreshToken, accessToken } = await this.AuthService.baseRegister(
       userRegisterLoginDto,
     );
     this.setCookie(response, refreshToken);
     return { accessToken };
   }
 
-  @Post('login')
-  async login(
+  @Post('google-register')
+  async googleRegister(
+    @Body() userGoogleRegisterLoginDto: UserGoogleRegisterLoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<AccessToken> {
+    const { refreshToken, accessToken } = await this.AuthService.googleRegister(
+      userGoogleRegisterLoginDto.token,
+    );
+    this.setCookie(response, refreshToken);
+    return { accessToken };
+  }
+
+  @Post('base-login')
+  async baseLogin(
     @Body() userRegisterLoginDto: UserRegisterLoginDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AccessToken> {
-    const { refreshToken, accessToken } = await this.AuthService.login(
+    const { refreshToken, accessToken } = await this.AuthService.baseLogin(
       userRegisterLoginDto,
+    );
+    this.setCookie(response, refreshToken);
+    return { accessToken };
+  }
+
+  @Post('google-login')
+  async googleLogin(
+    @Body() userGoogleRegisterLoginDto: UserGoogleRegisterLoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<AccessToken> {
+    const { refreshToken, accessToken } = await this.AuthService.googleLogin(
+      userGoogleRegisterLoginDto.token,
     );
     this.setCookie(response, refreshToken);
     return { accessToken };
@@ -61,6 +86,7 @@ export class AuthController {
     this.setCookie(response, refreshToken);
     return { accessToken };
   }
+
   // возможно поміняти на body
   @Put('verified-email/:id')
   verifiedEmail(@Param('id') id: number) {
