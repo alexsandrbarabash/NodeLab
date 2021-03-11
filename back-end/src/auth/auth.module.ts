@@ -8,6 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { config } from '../../config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { GoogleService } from './google/google.service';
+import { BaseService } from './base/base.service';
 
 @Module({
   imports: [
@@ -20,18 +22,18 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
         transport: {
           host: 'smtp.ukr.net',
           port: 465,
-          secure: true, // upgrade later with STARTTLS
+          secure: true,
           auth: {
             user: 'sbarabash2001@ukr.net',
             pass: '5ANBF24ChLeZWSwB',
           },
         },
         defaults: {
-          from: '"nest-modules" <modules@nestjs.com>',
+          from: '"nest-modules" <modules@nestjs.com>', // sbarabash2001@ukr.net
         },
         template: {
           dir: process.cwd() + '/templates/',
-          adapter: new PugAdapter(), // or new PugAdapter() or new EjsAdapter()
+          adapter: new PugAdapter(),
           options: {
             strict: true,
           },
@@ -40,6 +42,6 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, GoogleService, BaseService],
 })
 export class AuthModule {}
