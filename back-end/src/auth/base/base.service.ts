@@ -57,9 +57,10 @@ export class BaseService extends AuthService {
    * Потім видали ці коменти.
    */
 
-  baseRegister(userRegisterLoginDto: UserRegisterLoginDto) {
+  async baseRegister(userRegisterLoginDto: UserRegisterLoginDto) {
+    const tokens = await this.register(userRegisterLoginDto);
     // send email for register check
-    return this.register(userRegisterLoginDto);
+    return tokens;
   }
 
   async baseLogin(userRegisterLoginDto: UserRegisterLoginDto) {
