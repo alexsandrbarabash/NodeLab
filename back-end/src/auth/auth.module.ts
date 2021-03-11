@@ -24,8 +24,8 @@ import { BaseService } from './base/base.service';
           port: 465,
           secure: true,
           auth: {
-            user: 'sbarabash2001@ukr.net',
-            pass: '5ANBF24ChLeZWSwB',
+            user: config.USER_EMAIL,
+            pass: config.PASS_EMAIl,
           },
         },
         defaults: {
