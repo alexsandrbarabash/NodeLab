@@ -41,8 +41,24 @@ export class BaseService extends AuthService {
       });
   }
 
+  /**
+   * Потрібно зробити відправку для перевірки чи існує такий емаїл і
+   * функції для зміни пароля (тільки вітправка згенерованого функцією createPassword).
+   * Приклад функції вище.
+   * Я використовую бібліотеку NestJS - Mailer
+   * https://nest-modules.github.io/mailer/
+   * все підключено, в ядрі використовуються nodemailer його доки тоже можуть помогти.
+   * Росилка прив'язана до мого старого акаунта укр нета може потом на gmail поміняєм.
+   * Просто зараз зроби функції які кидають шаблони.
+   * Якщо буде бажання можеш зробити якісь шаблони тіпа Ejs для відправка,
+   * але це не обов'язково.
+   * Удачі.
+   * Єслі шо не понятно пиши сорі що скидую свою роботу.
+   * Потім видали ці коменти.
+   */
+
   baseRegister(userRegisterLoginDto: UserRegisterLoginDto) {
-    // send email for register
+    // send email for register check
     return this.register(userRegisterLoginDto);
   }
 
