@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import { User } from './entities/user.entities';
-import { Token } from './entities/token.entities';
+import { User } from './entities/user.entity';
+import { Token } from './entities/token.entity';
 
 type RegisterObject = {
   email: string;

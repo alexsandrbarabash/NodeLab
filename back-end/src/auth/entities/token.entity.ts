@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './user.entities';
+import { User } from './user.entity';
 
 @Entity()
 export class Token {

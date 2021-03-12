@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Token } from './token.entities';
+import { Token } from './token.entity';
 
 @Entity()
 @Unique(['email'])

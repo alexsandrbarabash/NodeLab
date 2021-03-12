@@ -2,9 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entities/user.entities';
+import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
-import { Token } from '../entities/token.entities';
+import { Token } from '../entities/token.entity';
 import { config } from '../../../config';
 import { OAuth2Client } from 'google-auth-library';
 
