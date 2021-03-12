@@ -5,8 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { Token } from '../entities/token.entity';
-import { config } from '../../../config';
 import { OAuth2Client } from 'google-auth-library';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GoogleService extends AuthService {
@@ -16,17 +16,18 @@ export class GoogleService extends AuthService {
     usersRepository: Repository<User>,
     @InjectRepository(Token)
     tokenRepository: Repository<Token>,
+    private configService: ConfigService,
   ) {
     super(jwtService, usersRepository, tokenRepository);
   }
 
   private async checkToken(token: string) {
     try {
-      const CLIENT_ID = config.CLIENT_ID;
-      const client = new OAuth2Client(CLIENT_ID);
+      const clientId = this.configService.get('CLIENT_ID');
+      const client = new OAuth2Client(clientId);
       const ticket = await client.verifyIdToken({
         idToken: token,
-        audience: CLIENT_ID,
+        audience: clientId,
       });
       return ticket.getPayload().email;
     } catch (e) {

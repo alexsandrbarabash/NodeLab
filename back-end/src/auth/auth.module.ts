@@ -5,17 +5,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Token } from './entities/token.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { config } from '../../config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { GoogleService } from './google/google.service';
 import { BaseService } from './base/base.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule,
     TypeOrmModule.forFeature([User, Token]),
-    JwtModule.register({
-      secret: config.secretKey,
+    JwtModule.registerAsync({
+      useFactory: () => ({
+        secret: process.env.SECRET_KEY,
+      }),
     }),
     MailerModule.forRootAsync({
       useFactory: () => ({
@@ -24,8 +27,8 @@ import { BaseService } from './base/base.service';
           port: 465,
           secure: true,
           auth: {
-            user: config.USER_EMAIL,
-            pass: config.PASS_EMAIl,
+            user: process.env.USER_EMAIL,
+            pass: process.env.PASS_EMAIl,
           },
         },
         defaults: {
