@@ -5,7 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { FeedModule } from './feed/feed.module';
 import { AuthMiddleware } from './auth/middleware/auth.middleware';
-import { AuthController } from './auth/auth.controller';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -14,6 +14,11 @@ import { AuthController } from './auth/auth.controller';
     AuthModule,
     ProfileModule,
     FeedModule,
+    JwtModule.registerAsync({
+      useFactory: () => ({
+        secret: process.env.SECRET_KEY,
+      }),
+    }),
   ],
 })
 export class AppModule implements NestModule {
