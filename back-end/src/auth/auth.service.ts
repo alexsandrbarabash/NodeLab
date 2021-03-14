@@ -96,7 +96,18 @@ export class AuthService {
         token: tokens.refreshToken,
       });
 
-      return tokens;
+      return {
+        accessToken: tokens.accessToken,
+        refreshToken: this.jwtService.sign(
+          {
+            refreshToken: tokens.refreshToken,
+            id: currentToken.user,
+          },
+          {
+            expiresIn: '365d',
+          },
+        ),
+      };
     } catch (e) {
       throw new HttpException('Not a valid token', HttpStatus.NOT_FOUND);
     }

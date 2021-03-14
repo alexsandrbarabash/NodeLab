@@ -92,12 +92,12 @@ export class AuthController {
     const { refreshToken, accessToken } = await this.AuthService.refreshToken(
       request.cookies['refresh'],
     );
-
+    console.log(refreshToken, '\n', accessToken);
     this.setCookie(response, refreshToken);
+
     return { accessToken };
   }
 
-  // возможно поміняти на body
   @Put('verified-email/:id')
   verifiedEmail(@Param('id') id: number) {
     return this.BaseService.verifiedEmail(id);
