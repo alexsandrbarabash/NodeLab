@@ -6,6 +6,8 @@ import { ProfileModule } from './profile/profile.module';
 import { FeedModule } from './feed/feed.module';
 import { AuthMiddleware } from './auth/middleware/auth.middleware';
 import { JwtModule } from '@nestjs/jwt';
+import { ProfileController } from './profile/profile.controller';
+import { FeedController } from './feed/feed.controller';
 
 @Module({
   imports: [
@@ -23,6 +25,6 @@ import { JwtModule } from '@nestjs/jwt';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('*');
+    consumer.apply(AuthMiddleware).forRoutes(ProfileController, FeedController);
   }
 }
