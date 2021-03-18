@@ -1,35 +1,34 @@
-import { Injectable, Options } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from '@nestjs/common';
 import { CreateFeedDto } from './dto/create-feed.dto';
-import { Feed, FeedDocument } from './schemas/feed.chema';
-import { Model } from 'mongoose';
 import { UpdateFeedDto } from './dto/update-feed.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Post } from './entities/post.entity';
 
 @Injectable()
 export class FeedService {
-    
-    constructor(@InjectModel(Feed.name) private feedModel: Model<FeedDocument>) {
-    }
+  constructor(
+    @InjectRepository(Post)
+    protected postRepository: Repository<Post>,
+  ) {}
 
-    async getAll(): Promise<Feed[]> {
-        return this.feedModel.find().exec()
-    }
+  getAll(): string {
+    return 'Ok';
+  }
 
-    async getById(id:string): Promise<Feed>{
-        return this.feedModel.findById(id)
-    }
+  getById(id: string): string {
+    return 'Ok';
+  }
 
-    async create(feedDto: CreateFeedDto): Promise<Feed> { 
-        const newFeed = new this.feedModel(feedDto)
-        return newFeed.save()
-        }
-    
-    async remove(id: string): Promise<Feed>{
-        return this.feedModel.findByIdAndRemove(id)
-    }
+  create(feedDto: CreateFeedDto): string {
+    return 'Ok';
+  }
 
-    async update(id: string, feedDto: UpdateFeedDto): Promise<Feed>{
-        return this.feedModel.findByIdAndUpdate(id, feedDto, {new: true})
-    }
+  remove(id: string): string {
+    return 'Ok';
+  }
 
+  update(id: string, feedDto: UpdateFeedDto): string {
+    return 'Ok';
+  }
 }

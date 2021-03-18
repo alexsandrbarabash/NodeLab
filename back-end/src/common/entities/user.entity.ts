@@ -5,7 +5,8 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Token } from './token.entity';
+import { Token } from '../../auth/entities/token.entity';
+import { Post } from '../../feed/entities/post.entity';
 
 @Entity()
 @Unique(['email'])
@@ -27,4 +28,7 @@ export class User {
 
   @OneToMany(() => Token, (Token) => Token.token)
   token: Token;
+
+  @OneToMany(() => Post, (Post) => Post.id)
+  post: Post;
 }
