@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { FeedModule } from './feed/feed.module';
-import { MongooseModule } from '@nestjs/mongoose';
+import { AuthMiddleware } from './auth/middleware/auth.middleware';
+import { JwtModule } from '@nestjs/jwt';
+import { ProfileController } from './profile/profile.controller';
+import { FeedController } from './feed/feed.controller';
 
 @Module({
   imports: [
@@ -13,7 +16,15 @@ import { MongooseModule } from '@nestjs/mongoose';
     AuthModule,
     ProfileModule,
     FeedModule,
-    MongooseModule.forRoot(`mongodb+srv://Artur:Artur-228@cluster0.iy8ik.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`)
+    JwtModule.registerAsync({
+      useFactory: () => ({
+        secret: process.env.SECRET_KEY,
+      }),
+    }),
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes(ProfileController, FeedController);
+  }
+}

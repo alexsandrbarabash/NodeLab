@@ -94,10 +94,10 @@ export class AuthController {
     );
 
     this.setCookie(response, refreshToken);
+
     return { accessToken };
   }
 
-  // возможно поміняти на body
   @Put('verified-email/:id')
   verifiedEmail(@Param('id') id: number) {
     return this.BaseService.verifiedEmail(id);
