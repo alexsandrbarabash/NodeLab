@@ -1,4 +1,4 @@
-export class UpdateFeedDto{
-    readonly photo: string
-    readonly description: string
+export class UpdateFeedDto {
+  readonly photo: string;
+  readonly description: string;
 }

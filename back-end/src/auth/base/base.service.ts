@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entities/user.entity';
+import { User } from '../../common/entities/user.entity';
 import { Repository } from 'typeorm';
 import { Token } from '../entities/token.entity';
 import { MailerService } from '@nestjs-modules/mailer';

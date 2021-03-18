@@ -1,29 +1,34 @@
-import { Injectable, Options } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateFeedDto } from './dto/create-feed.dto';
 import { UpdateFeedDto } from './dto/update-feed.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Post } from './entities/post.entity';
 
 @Injectable()
 export class FeedService {
-    
+  constructor(
+    @InjectRepository(Post)
+    protected postRepository: Repository<Post>,
+  ) {}
 
-    async getAll(): Promise<string> {
-        return 'Ok'
-    }
+  getAll(): string {
+    return 'Ok';
+  }
 
-    async getById(id:string): Promise<string>{
-        return 'Ok'
-    }
+  getById(id: string): string {
+    return 'Ok';
+  }
 
-    async create(feedDto: CreateFeedDto): Promise<string> { 
-        return 'Ok'
-        }
-    
-    async remove(id: string): Promise<string>{
-        return 'Ok'
-    }
+  create(feedDto: CreateFeedDto): string {
+    return 'Ok';
+  }
 
-    async update(id: string, feedDto: UpdateFeedDto): Promise<string>{
-        return 'Ok'
-    }
+  remove(id: string): string {
+    return 'Ok';
+  }
 
+  update(id: string, feedDto: UpdateFeedDto): string {
+    return 'Ok';
+  }
 }
