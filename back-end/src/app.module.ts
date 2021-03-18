@@ -23,6 +23,7 @@ import { FeedController } from './feed/feed.controller';
     }),
   ],
 })
+// export class AppModule {}
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes(ProfileController, FeedController);

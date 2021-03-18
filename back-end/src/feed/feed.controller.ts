@@ -11,7 +11,6 @@ import { CreateFeedDto } from './dto/create-feed.dto';
 import { UpdateFeedDto } from './dto/update-feed.dto';
 import { FeedService } from './feed.service';
 
-
 @Controller('feed')
 export class FeedController {
   constructor(private readonly feedServise: FeedService) {}

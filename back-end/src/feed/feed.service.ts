@@ -9,7 +9,7 @@ import { Post } from './entities/post.entity';
 export class FeedService {
   constructor(
     @InjectRepository(Post)
-    protected postRepository: Repository<Post>,
+    private postRepository: Repository<Post>,
   ) {}
 
   getAll(): string {
