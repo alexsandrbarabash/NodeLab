@@ -2,8 +2,6 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { FeedModule } from './feed/feed.module';
@@ -19,9 +17,6 @@ import { FeedController } from './feed/feed.controller';
       useFactory: () => ({
         secret: process.env.SECRET_KEY,
       }),
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client'),
     }),
     AuthModule,
     ProfileModule,
