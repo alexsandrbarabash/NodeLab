@@ -25,7 +25,7 @@ export class AuthService {
   ) {}
 
   private generationTokens(id: number) {
-    const accessToken = this.jwtService.sign({ id });
+    const accessToken = this.jwtService.sign({ id: id });
     return { accessToken, refreshToken: uuidv4() };
   }
 

@@ -2,11 +2,13 @@ import {
   Column,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
 import { Token } from '../../auth/entities/token.entity';
 import { Post } from '../../feed/entities/post.entity';
+import { Profile } from '../../profile/entities/profile.entity';
 
 @Entity()
 @Unique(['email'])
@@ -31,4 +33,7 @@ export class User {
 
   @OneToMany(() => Post, (Post) => Post.id)
   post: Post;
+
+  @OneToOne(() => Profile, (Profile) => Profile.id)
+  profile: Profile;
 }

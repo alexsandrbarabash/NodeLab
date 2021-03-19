@@ -21,7 +21,7 @@ export class AuthMiddleware implements NestMiddleware {
         const { id } = this.jwtService.verify(token);
         req.userId = id;
       } catch (e) {
-        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+        throw new HttpException('Request timeout', HttpStatus.REQUEST_TIMEOUT);
       }
     } else {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
