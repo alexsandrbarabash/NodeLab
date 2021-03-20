@@ -8,6 +8,7 @@ import { FeedModule } from './feed/feed.module';
 import { AuthMiddleware } from './auth/middleware/auth.middleware';
 import { ProfileController } from './profile/profile.controller';
 import { FeedController } from './feed/feed.controller';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FeedController } from './feed/feed.controller';
     AuthModule,
     ProfileModule,
     FeedModule,
+    ChatModule,
   ],
 })
 
