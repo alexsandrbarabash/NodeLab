@@ -16,17 +16,17 @@ import { ConnectService } from './connect.service';
 
 @WebSocketGateway()
 export class ConnectGateway implements OnGatewayDisconnect {
-  constructor(private ConnectService: ConnectService) {}
+  constructor(private connectService: ConnectService) {}
 
   @SubscribeMessage('authorization')
   authorization(
     @MessageBody() token: string,
     @ConnectedSocket() { id }: Socket,
   ): Promise<WsResponse<null>> {
-    return this.ConnectService.authorization(token, id);
+    return this.connectService.authorization(token, id);
   }
 
   public handleDisconnect({ id }: Socket): void {
-    this.ConnectService.disconnect(id);
+    this.connectService.disconnect(id);
   }
 }

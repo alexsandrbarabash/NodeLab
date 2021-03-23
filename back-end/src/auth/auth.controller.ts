@@ -21,9 +21,9 @@ type AccessToken = { accessToken: string };
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly AuthService: AuthService,
-    private readonly GoogleService: GoogleService,
-    private readonly BaseService: BaseService,
+    private readonly authService: AuthService,
+    private readonly googleService: GoogleService,
+    private readonly baseService: BaseService,
   ) {}
 
   private setCookie(res: Response, refreshToken: string) {
@@ -38,7 +38,7 @@ export class AuthController {
     @Body() userRegisterLoginDto: UserRegisterLoginDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AccessToken> {
-    const { refreshToken, accessToken } = await this.BaseService.baseRegister(
+    const { refreshToken, accessToken } = await this.baseService.baseRegister(
       userRegisterLoginDto,
     );
     this.setCookie(response, refreshToken);
@@ -53,7 +53,7 @@ export class AuthController {
     const {
       refreshToken,
       accessToken,
-    } = await this.GoogleService.googleRegister(
+    } = await this.googleService.googleRegister(
       userGoogleRegisterLoginDto.token,
     );
     this.setCookie(response, refreshToken);
@@ -65,7 +65,7 @@ export class AuthController {
     @Body() userRegisterLoginDto: UserRegisterLoginDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AccessToken> {
-    const { refreshToken, accessToken } = await this.BaseService.baseLogin(
+    const { refreshToken, accessToken } = await this.baseService.baseLogin(
       userRegisterLoginDto,
     );
     this.setCookie(response, refreshToken);
@@ -77,7 +77,7 @@ export class AuthController {
     @Body() userGoogleRegisterLoginDto: UserGoogleRegisterLoginDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AccessToken> {
-    const { refreshToken, accessToken } = await this.GoogleService.googleLogin(
+    const { refreshToken, accessToken } = await this.googleService.googleLogin(
       userGoogleRegisterLoginDto.token,
     );
     this.setCookie(response, refreshToken);
@@ -89,7 +89,7 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AccessToken> {
-    const { refreshToken, accessToken } = await this.AuthService.refreshTokens(
+    const { refreshToken, accessToken } = await this.authService.refreshTokens(
       request.cookies['refresh'],
     );
 
@@ -100,11 +100,11 @@ export class AuthController {
 
   @Put('verified-email/:id')
   verifiedEmail(@Param('id') id: number) {
-    return this.BaseService.verifiedEmail(id);
+    return this.baseService.verifiedEmail(id);
   }
 
   @Put('forget-password')
   forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
-    return this.BaseService.forgetPassword(forgetPasswordDto);
+    return this.baseService.forgetPassword(forgetPasswordDto);
   }
 }
