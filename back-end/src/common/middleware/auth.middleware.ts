@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response, NextFunction } from 'express';
-import ExpandedRequest from '../../common/modules/respons.model';
-import { PayloadAccessJwt } from '../../common/modules/jwt.model';
+import ExpandedRequest from '../modules/respons.model';
+import { PayloadAccessJwt } from '../modules/jwt.model';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {

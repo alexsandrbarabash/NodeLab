@@ -29,17 +29,18 @@ export class ProfileService {
     return this.profileRepository.save(profile);
   }
 
-  // не доробляно
   async updateProfile(
     userId: number,
     photo: Express.Multer.File,
     updateProfileDto: UpdateProfileDto,
   ) {
+    const profile = await this.profileRepository.findOne(userId);
     let photoObject: { photo?: string };
     if (photo) {
-      fs.unlink('sdf.txt', (err) => {
-        throw err;
-      });
+      if (profile.photo !== 'default.jpg')
+        fs.unlink(`../../public/${profile.photo}`, (err) => {
+          throw err;
+        });
       photoObject = { photo: photo.filename };
     }
 

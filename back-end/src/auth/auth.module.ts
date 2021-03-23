@@ -10,7 +10,7 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { GoogleService } from './google/google.service';
 import { BaseService } from './base/base.service';
 import { ConfigModule } from '@nestjs/config';
-import { AuthMiddleware } from './middleware/auth.middleware';
+import { AuthMiddleware } from '../common/middleware/auth.middleware';
 
 @Module({
   imports: [

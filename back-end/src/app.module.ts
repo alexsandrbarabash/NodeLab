@@ -5,12 +5,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { FeedModule } from './feed/feed.module';
-import { AuthMiddleware } from './auth/middleware/auth.middleware';
+import { AuthMiddleware } from './common/middleware/auth.middleware';
 import { ProfileController } from './profile/profile.controller';
 import { FeedController } from './feed/feed.controller';
 import { ChatModule } from './chat/chat.module';
-import { ConnectGateway } from './connect/connect.gateway';
-import { ConnectService } from './connect/connect.service';
 import { ConnectModule } from './connect/connect.module';
 
 @Module({
