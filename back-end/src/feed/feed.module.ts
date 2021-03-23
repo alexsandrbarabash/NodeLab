@@ -11,7 +11,7 @@ import filenameCreator from '../common/logic/filename.helper';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Post]),
+    TypeOrmModule.forFeature([Post]),
     MulterModule.register({
       fileFilter: imgValidator,
       storage: diskStorage({

@@ -18,7 +18,7 @@ export class Profile {
   @Column({ default: '' })
   aboutMe: string;
 
-  @Column()
+  @Column({default: 'default.jpg'})
   photo: string;
 
   @OneToOne(() => User, (User) => User.id)

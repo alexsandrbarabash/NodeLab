@@ -19,20 +19,17 @@ export class ProfileService {
     return this.profileRepository.findOne({ user: userId });
   }
 
-  async createProfile(userId: number, photo: Express.Multer.File) {
-    if (!photo) {
-      throw new HttpException('Incorrect data', HttpStatus.NOT_ACCEPTABLE);
-    }
+  async createProfile(userId: number) {
     const user = await this.userRepository.findOne(userId);
     const profile = this.profileRepository.create({
       name: user.email,
-      photo: photo.filename,
       user: userId,
     });
 
     return this.profileRepository.save(profile);
   }
 
+  // не доробляно
   async updateProfile(
     userId: number,
     photo: Express.Multer.File,

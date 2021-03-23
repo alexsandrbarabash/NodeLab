@@ -25,17 +25,12 @@ export class ProfileController {
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  create(
-    @UploadedFile()
-    file: Express.Multer.File,
-    @Req() { userId }: ExpandedRequest,
-  ): Promise<Profile> {
-    return this.profileService.createProfile(userId, file);
+  create(@Req() { userId }: ExpandedRequest): Promise<Profile> {
+    return this.profileService.createProfile(userId);
   }
 
-  @UseInterceptors(FileInterceptor('file'))
   @Put()
+  @UseInterceptors(FileInterceptor('file'))
   update(
     @Req() { userId }: ExpandedRequest,
     @UploadedFile()
