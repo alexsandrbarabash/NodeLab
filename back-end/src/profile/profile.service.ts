@@ -34,11 +34,11 @@ export class ProfileService {
     photo: Express.Multer.File,
     updateProfileDto: UpdateProfileDto,
   ) {
-    const profile = await this.profileRepository.findOne(userId);
+    const profile = await this.profileRepository.findOne({ user: userId });
     let photoObject: { photo?: string };
     if (photo) {
       if (profile.photo !== 'default.jpg')
-        fs.unlink(`../../public/${profile.photo}`, (err) => {
+        fs.unlink(`../../public/avatars/${profile.photo}`, (err) => {
           throw err;
         });
       photoObject = { photo: photo.filename };

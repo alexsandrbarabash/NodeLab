@@ -8,23 +8,26 @@ import {
   Put,
   UseInterceptors,
   UploadedFile,
+  Query,
+  Req,
 } from '@nestjs/common';
 import { CreateFeedDto } from './dto/create-feed.dto';
 import { UpdateFeedDto } from './dto/update-feed.dto';
 import { FeedService } from './feed.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import ExpandedRequest from '../common/modules/respons.model';
 
 @Controller('feed')
 export class FeedController {
   constructor(private readonly feedServise: FeedService) {}
 
   @Get()
-  getAll(): string {
+  getAll() {
     return this.feedServise.getAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): string {
+  getOne(@Param('id') id: number) {
     return this.feedServise.getById(id);
   }
 
@@ -34,12 +37,13 @@ export class FeedController {
     @UploadedFile()
     file: Express.Multer.File,
     @Body() createFeedDto: CreateFeedDto,
-  ): string {
-    return this.feedServise.create(createFeedDto);
+    @Req() { userId }: ExpandedRequest,
+  ) {
+    return this.feedServise.create(createFeedDto, file, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): string {
+  remove(@Param('id') id: number) {
     return this.feedServise.remove(id);
   }
 
@@ -49,8 +53,8 @@ export class FeedController {
     @UploadedFile()
     file: Express.Multer.File,
     @Body() updateFeedDto: UpdateFeedDto,
-    @Param('id') id: string,
-  ): string {
-    return this.feedServise.update(id, updateFeedDto);
+    @Param('id') id: number,
+  ) {
+    return this.feedServise.update(id, updateFeedDto, file);
   }
 }
