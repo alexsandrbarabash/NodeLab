@@ -9,6 +9,9 @@ import { AuthMiddleware } from './auth/middleware/auth.middleware';
 import { ProfileController } from './profile/profile.controller';
 import { FeedController } from './feed/feed.controller';
 import { ChatModule } from './chat/chat.module';
+import { ConnectGateway } from './connect/connect.gateway';
+import { ConnectService } from './connect/connect.service';
+import { ConnectModule } from './connect/connect.module';
 
 @Module({
   imports: [
@@ -23,7 +26,8 @@ import { ChatModule } from './chat/chat.module';
     ProfileModule,
     FeedModule,
     ChatModule,
-  ],
+    ConnectModule,
+  ]
 })
 
 // export class AppModule {}

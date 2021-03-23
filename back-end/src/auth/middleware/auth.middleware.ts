@@ -7,6 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Response, NextFunction } from 'express';
 import ExpandedRequest from '../../common/modules/respons.model';
+import { PayloadAccessJwt } from '../../common/modules/jwt.model';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -18,7 +19,7 @@ export class AuthMiddleware implements NestMiddleware {
       const token = (authHeaders as string).split(' ')[1];
 
       try {
-        const { id } = this.jwtService.verify(token);
+        const { id } = this.jwtService.verify<PayloadAccessJwt>(token);
         req.userId = id;
       } catch (e) {
         throw new HttpException('Request timeout', HttpStatus.REQUEST_TIMEOUT);

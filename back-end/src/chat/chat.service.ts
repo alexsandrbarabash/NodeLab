@@ -9,7 +9,7 @@ export class ChatService {
   }
 
   findAll() {
-    return `This action returns all chat`;
+    return { event: 'findAllChat', data: `This action returns all chat` };
   }
 
   findOne(id: number) {

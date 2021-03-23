@@ -1,13 +1,20 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody } from '@nestjs/websockets';
+import {
+  WebSocketGateway,
+  SubscribeMessage,
+  MessageBody,
+} from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
+import { UseGuards } from '@nestjs/common';
+import { WsConnectGuard } from '../common/guards/wsconnect.guard';
 
 @WebSocketGateway()
+@UseGuards(WsConnectGuard)
 export class ChatGateway {
   constructor(private readonly chatService: ChatService) {}
 
-  @SubscribeMessage('createChat')
+  @SubscribeMessage(' ')
   create(@MessageBody() createChatDto: CreateChatDto) {
     return this.chatService.create(createChatDto);
   }

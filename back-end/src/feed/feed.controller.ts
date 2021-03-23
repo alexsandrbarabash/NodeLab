@@ -20,10 +20,10 @@ export class FeedController {
     return this.feedServise.getAll();
   }
 
-  @Get(':id')
-  getOne(@Param('id') id: string): string {
-    return this.feedServise.getById(id);
-  }
+  // @Get(':id')
+  // getOne(@Param('id') id: string): string {
+  //   return this.feedServise.getById(id);
+  // }
 
   @Post()
   create(@Body() createFeedDto: CreateFeedDto): string {

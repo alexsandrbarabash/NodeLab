@@ -9,6 +9,7 @@ import {
 import { Token } from '../../auth/entities/token.entity';
 import { Post } from '../../feed/entities/post.entity';
 import { Profile } from '../../profile/entities/profile.entity';
+import { WebsocketId } from './websocketId.entity';
 
 @Entity()
 @Unique(['email'])
@@ -36,4 +37,7 @@ export class User {
 
   @OneToOne(() => Profile, (Profile) => Profile.id)
   profile: Profile;
+
+  @OneToMany(() => WebsocketId, (WebsocketId) => WebsocketId.id)
+  websocketId: WebsocketId;
 }
