@@ -2,20 +2,26 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../common/entities/user.entity';
 
 @Entity()
-export class Token {
+export class Profile {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('uuid')
-  token: string;
+  @Column()
+  name: string;
 
-  @ManyToOne(() => User)
+  @Column({ default: '' })
+  aboutMe: string;
+
+  @Column({default: 'default.jpg'})
+  photo: string;
+
+  @OneToOne(() => User, (User) => User.id)
   @JoinColumn()
   user: number;
 }

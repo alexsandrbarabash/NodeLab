@@ -8,12 +8,18 @@ import {
 import { User } from '../../common/entities/user.entity';
 
 @Entity()
-export class Token {
+export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('uuid')
-  token: string;
+  @Column()
+  description: string;
+
+  @Column()
+  title: string;
+
+  @Column()
+  photo: string;
 
   @ManyToOne(() => User)
   @JoinColumn()

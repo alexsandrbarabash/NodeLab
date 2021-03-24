@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User } from '../common/entities/user.entity';
 import { Token } from './entities/token.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { MailerModule } from '@nestjs-modules/mailer';
@@ -10,6 +10,7 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { GoogleService } from './google/google.service';
 import { BaseService } from './base/base.service';
 import { ConfigModule } from '@nestjs/config';
+import { AuthMiddleware } from '../common/middleware/auth.middleware';
 
 @Module({
   imports: [
@@ -45,6 +46,6 @@ import { ConfigModule } from '@nestjs/config';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, GoogleService, BaseService],
+  providers: [AuthService, GoogleService, BaseService, AuthMiddleware],
 })
 export class AuthModule {}

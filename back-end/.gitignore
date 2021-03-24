@@ -35,3 +35,8 @@ lerna-debug.log*
 
 ormconfig.json
 .env
+
+/public/feed/*
+/public/avatars/*
+!/public/avatars/default.jpg
+/test-websoket-client

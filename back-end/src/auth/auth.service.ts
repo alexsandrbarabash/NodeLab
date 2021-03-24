@@ -4,8 +4,9 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import { User } from './entities/user.entity';
+import { User } from '../common/entities/user.entity';
 import { Token } from './entities/token.entity';
+import { PayloadRefreshJwt } from '../common/modules/jwt.model';
 
 type RegisterObject = {
   email: string;
@@ -25,8 +26,9 @@ export class AuthService {
   ) {}
 
   private generationTokens(id: number) {
-    const accessToken = this.jwtService.sign({ id });
-
+    const accessToken = this.jwtService.sign({ id: id },{
+      expiresIn: 1200 // 20 minutes
+    });
     return { accessToken, refreshToken: uuidv4() };
   }
 
@@ -73,32 +75,38 @@ export class AuthService {
     return this.createToken(user);
   }
 
-  async refreshToken(token: string) {
-    try {
-      const {
-        refreshToken,
-        id,
-      }: { refreshToken: string; id: number } = this.jwtService.verify(token);
-      const currentToken = await this.tokenRepository.findOne({
-        token: refreshToken,
-      });
+  async refreshTokens(refreshToken: string) {
+    const { token, user } = this.jwtService.verify<PayloadRefreshJwt>(
+      refreshToken,
+    );
+    const currentToken = await this.tokenRepository.findOne({
+      token,
+    });
 
-      if (!currentToken) {
-        this.tokenRepository.delete({ user: id }); // delete all tokens this user if token isn't valid
+    if (!currentToken) {
+      await this.tokenRepository.delete({ user }); // delete all tokens this user if token isn't valid
 
-        throw new HttpException('Not a valid token', HttpStatus.NOT_FOUND);
-      }
-
-      const tokens = this.generationTokens(currentToken.user);
-
-      this.tokenRepository.save({
-        ...currentToken,
-        token: tokens.refreshToken,
-      });
-
-      return tokens;
-    } catch (e) {
       throw new HttpException('Not a valid token', HttpStatus.NOT_FOUND);
     }
+
+    const tokens = this.generationTokens(currentToken.user);
+
+    await this.tokenRepository.save({
+      ...currentToken,
+      token: tokens.refreshToken,
+    });
+
+    return {
+      accessToken: tokens.accessToken,
+      refreshToken: this.jwtService.sign(
+        {
+          refreshToken: tokens.refreshToken,
+          id: currentToken.user,
+        },
+        {
+          expiresIn: '365d',
+        },
+      ),
+    };
   }
 }

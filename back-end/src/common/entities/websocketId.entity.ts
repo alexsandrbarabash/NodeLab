@@ -3,17 +3,18 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn, Unique,
 } from 'typeorm';
-import { User } from '../../common/entities/user.entity';
+import {User} from "./user.entity";
 
 @Entity()
-export class Token {
+@Unique(['websocketId'])
+export class WebsocketId {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('uuid')
-  token: string;
+  @Column()
+  websocketId: string
 
   @ManyToOne(() => User)
   @JoinColumn()
