@@ -3,8 +3,9 @@ import { CreateFeedDto } from './dto/create-feed.dto';
 import { UpdateFeedDto } from './dto/update-feed.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { join } from 'path';
 import { Post } from './entities/post.entity';
-import * as fs from 'fs';
+import { deletFile } from '../common/logic/delet.file.helpers';
 
 @Injectable()
 export class FeedService {
@@ -41,12 +42,18 @@ export class FeedService {
     const post = await this.postRepository.findOne(id);
     let photoObject: { photo?: string };
     if (photo) {
-      if (post.photo !== 'default.jpg')
-        fs.unlink(`./public/feed/${post.photo}`, (err) => {
-          if(err) {
-            throw err;
-          }
-        });
+      if (post.photo !== 'default.jpg') {
+        const err = await deletFile(
+          join(__dirname, '..', '..', 'public', 'feed', post.photo),
+        );
+        if (err) {
+          throw new HttpException(
+            'Server error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+        }
+      }
+
       photoObject = { photo: photo.filename };
     }
 
