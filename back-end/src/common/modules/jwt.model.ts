@@ -4,5 +4,5 @@ export interface PayloadAccessJwt {
 
 export interface PayloadRefreshJwt {
   token: string;
-  user: number;
+  id: number;
 };

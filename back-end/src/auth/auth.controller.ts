@@ -89,6 +89,7 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AccessToken> {
+
     const { refreshToken, accessToken } = await this.authService.refreshTokens(
       request.cookies['refresh'],
     );

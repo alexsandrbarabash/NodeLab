@@ -4,7 +4,7 @@ import { UpdateFeedDto } from './dto/update-feed.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
-import fs from "fs";
+import * as fs from 'fs';
 
 @Injectable()
 export class FeedService {
@@ -22,27 +22,30 @@ export class FeedService {
   }
 
   create(feedDto: CreateFeedDto, file: Express.Multer.File, userId: number) {
-    if (file) {
+    if (!file) {
       throw new HttpException('Incorrect data', HttpStatus.NOT_ACCEPTABLE);
     }
-    return this.postRepository.create({
+    const post = this.postRepository.create({
       ...feedDto,
       user: userId,
       photo: file.filename,
     });
+    return this.postRepository.save(post);
   }
 
   remove(id: number) {
     return this.postRepository.delete(id);
   }
 
-  async update(id: number, feedDto: UpdateFeedDto, photo: Express.Multer.File,) {
+  async update(id: number, feedDto: UpdateFeedDto, photo: Express.Multer.File) {
     const post = await this.postRepository.findOne(id);
     let photoObject: { photo?: string };
     if (photo) {
       if (post.photo !== 'default.jpg')
-        fs.unlink(`../../public/feed/${post.photo}`, (err) => {
-          throw err;
+        fs.unlink(`./public/feed/${post.photo}`, (err) => {
+          if(err) {
+            throw err;
+          }
         });
       photoObject = { photo: photo.filename };
     }
@@ -53,9 +56,9 @@ export class FeedService {
     };
 
     if (
-        updateObject &&
-        Object.keys(updateObject).length === 0 &&
-        updateObject.constructor === Object
+      updateObject &&
+      Object.keys(updateObject).length === 0 &&
+      updateObject.constructor === Object
     ) {
       throw new HttpException('Incorrect data', HttpStatus.NOT_ACCEPTABLE);
     }

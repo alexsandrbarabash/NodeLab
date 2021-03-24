@@ -8,7 +8,6 @@ import {
   Put,
   UseInterceptors,
   UploadedFile,
-  Query,
   Req,
 } from '@nestjs/common';
 import { CreateFeedDto } from './dto/create-feed.dto';
@@ -39,6 +38,7 @@ export class FeedController {
     @Body() createFeedDto: CreateFeedDto,
     @Req() { userId }: ExpandedRequest,
   ) {
+    console.log(file)
     return this.feedServise.create(createFeedDto, file, userId);
   }
 

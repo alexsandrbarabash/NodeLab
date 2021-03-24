@@ -38,8 +38,11 @@ export class ProfileService {
     let photoObject: { photo?: string };
     if (photo) {
       if (profile.photo !== 'default.jpg')
-        fs.unlink(`../../public/avatars/${profile.photo}`, (err) => {
-          throw err;
+        fs.unlink(`./public/avatars/${profile.photo}`, (err) => {
+          if (err) {
+
+            throw new HttpException('Server error', HttpStatus.INTERNAL_SERVER_ERROR);
+          }
         });
       photoObject = { photo: photo.filename };
     }

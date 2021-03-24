@@ -26,9 +26,12 @@ export class AuthService {
   ) {}
 
   private generationTokens(id: number) {
-    const accessToken = this.jwtService.sign({ id: id },{
-      expiresIn: 1200 // 20 minutes
-    });
+    const accessToken = this.jwtService.sign(
+      { id: id },
+      {
+        expiresIn: 1200, // 20 minutes
+      },
+    );
     return { accessToken, refreshToken: uuidv4() };
   }
 
@@ -44,7 +47,7 @@ export class AuthService {
       ...tokens,
       refreshToken: this.jwtService.sign(
         {
-          refreshToken: tokens.refreshToken,
+          token: tokens.refreshToken,
           id: user.id,
         },
         {
@@ -76,15 +79,16 @@ export class AuthService {
   }
 
   async refreshTokens(refreshToken: string) {
-    const { token, user } = this.jwtService.verify<PayloadRefreshJwt>(
+    const { token, id } = this.jwtService.verify<PayloadRefreshJwt>(
       refreshToken,
     );
     const currentToken = await this.tokenRepository.findOne({
       token,
     });
 
+
     if (!currentToken) {
-      await this.tokenRepository.delete({ user }); // delete all tokens this user if token isn't valid
+      await this.tokenRepository.delete({ id }); // delete all tokens this user if token isn't valid
 
       throw new HttpException('Not a valid token', HttpStatus.NOT_FOUND);
     }
@@ -100,7 +104,7 @@ export class AuthService {
       accessToken: tokens.accessToken,
       refreshToken: this.jwtService.sign(
         {
-          refreshToken: tokens.refreshToken,
+          token: tokens.refreshToken,
           id: currentToken.user,
         },
         {

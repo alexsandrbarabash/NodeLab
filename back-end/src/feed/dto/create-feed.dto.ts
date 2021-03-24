@@ -1,4 +1,4 @@
 export class CreateFeedDto {
-  readonly photo: string;
+  readonly title: string;
   readonly description: string;
 }
