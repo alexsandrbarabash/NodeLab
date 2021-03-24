@@ -38,7 +38,7 @@ export class FeedController {
     @Body() createFeedDto: CreateFeedDto,
     @Req() { userId }: ExpandedRequest,
   ) {
-    console.log(file)
+    console.log(userId)
     return this.feedServise.create(createFeedDto, file, userId);
   }
 

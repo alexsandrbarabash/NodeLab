@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { join } from 'path';
 import { Post } from './entities/post.entity';
 import { deletFile } from '../common/logic/delet.file.helpers';
+import {log} from "util";
 
 @Injectable()
 export class FeedService {
@@ -26,6 +27,7 @@ export class FeedService {
     if (!file) {
       throw new HttpException('Incorrect data', HttpStatus.NOT_ACCEPTABLE);
     }
+    console.log(userId);
     const post = this.postRepository.create({
       ...feedDto,
       user: userId,

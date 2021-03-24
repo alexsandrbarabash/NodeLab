@@ -38,6 +38,7 @@ export class ProfileController {
     @Body()
     updateProfileDto: UpdateProfileDto,
   ): Promise<UpdateResult> {
+
     return this.profileService.updateProfile(userId, file, updateProfileDto);
   }
 }

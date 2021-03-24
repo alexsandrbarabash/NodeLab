@@ -100,11 +100,11 @@ export class BaseService extends AuthService {
   async forgetPassword({ email }: ForgetPasswordDto) {
     const password = this.createPassword();
     const passwordHash = await bcrypt.hash(password, 5);
-    await this.usersRepository.update(
-      { email, isGoogleAuthorization: false },
+    const updateResult = await this.usersRepository.update(
+      { email, isGoogleAuthorization: false, isVerifiedEmail: true },
       { password: passwordHash },
     );
-
+    console.log(updateResult)
     const mailReceiver = email;
     const subject = 'Forgot password';
     const text = "We've sent this mail because you forgot your password.";

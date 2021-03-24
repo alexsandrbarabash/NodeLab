@@ -86,26 +86,22 @@ export class AuthService {
       token,
     });
 
-
     if (!currentToken) {
-      await this.tokenRepository.delete({ id }); // delete all tokens this user if token isn't valid
-
+      await this.tokenRepository.delete({ user:id }); // delete all tokens this user if token isn't valid
       throw new HttpException('Not a valid token', HttpStatus.NOT_FOUND);
     }
-
-    const tokens = this.generationTokens(currentToken.user);
+    const tokens = this.generationTokens(id);
 
     await this.tokenRepository.save({
       ...currentToken,
       token: tokens.refreshToken,
     });
-
     return {
       accessToken: tokens.accessToken,
       refreshToken: this.jwtService.sign(
         {
           token: tokens.refreshToken,
-          id: currentToken.user,
+          id: id,
         },
         {
           expiresIn: '365d',
