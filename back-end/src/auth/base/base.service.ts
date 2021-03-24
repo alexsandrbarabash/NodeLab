@@ -23,43 +23,40 @@ export class BaseService extends AuthService {
     super(jwtService, usersRepository, tokenRepository);
   }
 
-  // email
-  private example(): void {
-    this.mailerService
-      .sendMail({
-        to: 'sbarabas176@gmail.com', // list of receivers
-        from: 'sbarabash2001@ukr.net', // sender address
-        subject: 'Testing Nest MailerModule ✔', // Subject line
-        text: 'welcome', // plaintext body
-        html: '<b>welcome</b>', // HTML body content
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
+  private async sendMail(
+    mailReceiver: string,
+    subject: string,
+    text: string,
+    html: string,
+  ) {
+    try {
+      const res = await this.mailerService.sendMail({
+        to: mailReceiver,
+        from: 'sbarabash2001@ukr.net',
+        subject: subject,
+        text: text,
+        html: html,
       });
-  }
 
-  /**
-   * Потрібно зробити відправку для перевірки чи існує такий емаїл і
-   * функції для зміни пароля (тільки вітправка згенерованого функцією createPassword).
-   * Приклад функції вище.
-   * Я використовую бібліотеку NestJS - Mailer
-   * https://nest-modules.github.io/mailer/
-   * все підключено, в ядрі використовуються nodemailer його доки тоже можуть помогти.
-   * Росилка прив'язана до мого старого акаунта укр нета може потом на gmail поміняєм.
-   * Просто зараз зроби функції які кидають шаблони.
-   * Якщо буде бажання можеш зробити якісь шаблони тіпа Ejs для відправка,
-   * але це не обов'язково.
-   * Удачі.
-   * Єслі шо не понятно пиши сорі що скидую свою роботу.
-   * Потім видали ці коменти.
-   */
+      console.log(res);
+    } catch (error) {
+      console.warn(error);
+    }
+  }
 
   async baseRegister(userRegisterLoginDto: UserRegisterLoginDto) {
     const tokens = await this.register(userRegisterLoginDto);
-    // send email for register check
+
+    const mailReceiver = userRegisterLoginDto.email;
+    const subject = 'Mail check.';
+    const text = 'We sent this mail to check if your email address exists.';
+    const html = `
+      <h2>HEY!</h2>
+      <br/>      
+      <i>${text}</i>
+    `;
+
+    await this.sendMail(mailReceiver, subject, text, html);
     return tokens;
   }
 
@@ -103,11 +100,27 @@ export class BaseService extends AuthService {
   async forgetPassword({ email }: ForgetPasswordDto) {
     const password = this.createPassword();
     const passwordHash = await bcrypt.hash(password, 5);
-    this.usersRepository.update(
+    await this.usersRepository.update(
       { email, isGoogleAuthorization: false },
       { password: passwordHash },
     );
-    // send email to user change password
+
+    const mailReceiver = email;
+    const subject = 'Forgot password';
+    const text = "We've sent this mail because you forgot your password.";
+    const html = `
+      <h2>HEY!</h2>
+      <br/>
+      <i>${text}</i>
+      <br/>
+      <i>Your new account data:</i>
+      <ul>
+        <li>login: ${email}'</li>
+        <li>password: ${password}</li>
+      </ul>
+    `;
+
+    await this.sendMail(mailReceiver, subject, text, html);
     return 'Ok';
   }
 }

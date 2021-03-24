@@ -4,6 +4,6 @@ import { FeedController } from './feed.controller';
 
 @Module({
   providers: [FeedService],
-  controllers: [FeedController]
+  controllers: [FeedController],
 })
 export class FeedModule {}
