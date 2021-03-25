@@ -21,7 +21,7 @@ export class Post {
   @Column()
   photo: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { nullable: false })
   @JoinColumn()
   user: number;
 }

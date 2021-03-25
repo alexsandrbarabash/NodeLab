@@ -1,5 +1,5 @@
 import {
-  Column,
+  Column, CreateDateColumn,
   Entity,
   OneToMany,
   OneToOne,
@@ -25,6 +25,9 @@ export class User {
 
   @Column({ default: false })
   isVerifiedEmail: boolean;
+
+  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+  public createdAt: Date;
 
   @Column({ default: false })
   isGoogleAuthorization: boolean;

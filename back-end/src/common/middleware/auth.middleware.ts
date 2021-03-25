@@ -17,13 +17,19 @@ export class AuthMiddleware implements NestMiddleware {
     const authHeaders = req.headers.authorization;
     if (authHeaders && (authHeaders as string).split(' ')[1]) {
       const token = (authHeaders as string).split(' ')[1];
-
+      let user: PayloadAccessJwt;
       try {
-        const { id } = this.jwtService.verify<PayloadAccessJwt>(token);
-        req.userId = id;
+        user = this.jwtService.verify<PayloadAccessJwt>(token);
+
+
       } catch (e) {
         throw new HttpException('Request timeout', HttpStatus.REQUEST_TIMEOUT);
       }
+
+      if (!user.userId) {
+        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      }
+      req.userId = user.userId;
     } else {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }

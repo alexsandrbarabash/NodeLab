@@ -16,14 +16,14 @@ export class ConnectService {
   async authorization(token: string, websocketId: string) {
     try {
       if (token) {
-        const { id } = this.jwtService.verify<PayloadAccessJwt>(token);
+        const { userId } = this.jwtService.verify<PayloadAccessJwt>(token);
         const isAuthorized = await this.websocketIdRepository.findOne({
           websocketId,
         });
         if (!isAuthorized) {
           const websocket = this.websocketIdRepository.create({
             websocketId,
-            user: id,
+            user: userId,
           });
 
           await this.websocketIdRepository.save(websocket);

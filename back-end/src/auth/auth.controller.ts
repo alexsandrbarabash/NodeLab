@@ -6,7 +6,6 @@ import {
   Res,
   Req,
   Put,
-  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserRegisterLoginDto } from './dto/user-register-login.dto';
@@ -15,6 +14,7 @@ import { UserGoogleRegisterLoginDto } from './dto/user-google-register-login.dto
 import { GoogleService } from './google/google.service';
 import { BaseService } from './base/base.service';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
+import ExpandedRequest from '../common/modules/respons.model';
 
 type AccessToken = { accessToken: string };
 
@@ -89,7 +89,6 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AccessToken> {
-
     const { refreshToken, accessToken } = await this.authService.refreshTokens(
       request.cookies['refresh'],
     );
@@ -99,9 +98,9 @@ export class AuthController {
     return { accessToken };
   }
 
-  @Put('verified-email/:id')
-  verifiedEmail(@Param('id') id: number) {
-    return this.baseService.verifiedEmail(id);
+  @Put('verified-email')
+  verifiedEmail(@Req() { userId }: ExpandedRequest) {
+    return this.baseService.verifiedEmail(userId);
   }
 
   @Put('forget-password')

@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -25,12 +30,17 @@ import { ConnectModule } from './connect/connect.module';
     FeedModule,
     ChatModule,
     ConnectModule,
-  ]
+  ],
 })
 
 // export class AppModule {}
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes(ProfileController, FeedController);
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes(ProfileController, FeedController, {
+        path: 'auth/verified-email',
+        method: RequestMethod.PUT,
+      });
   }
 }

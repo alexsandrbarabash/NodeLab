@@ -27,7 +27,7 @@ export class AuthService {
 
   private generationTokens(id: number) {
     const accessToken = this.jwtService.sign(
-      { id: id },
+      { userId: id },
       {
         expiresIn: 1200, // 20 minutes
       },
@@ -35,26 +35,34 @@ export class AuthService {
     return { accessToken, refreshToken: uuidv4() };
   }
 
-  protected async createToken(user: User) {
-    const tokens = this.generationTokens(user.id);
-    const token = this.tokenRepository.create({
-      token: tokens.refreshToken,
-      user: user.id,
-    });
-    await this.tokenRepository.save(token);
-
+  private returnJwt(accessToken: string, refreshToken: string, id: number) {
     return {
-      ...tokens,
+      accessToken,
       refreshToken: this.jwtService.sign(
         {
-          token: tokens.refreshToken,
-          id: user.id,
+          token: refreshToken,
+          id: id,
         },
         {
           expiresIn: '365d',
         },
       ),
     };
+  }
+
+  protected async createToken(user: User, refToken = '') {
+    const tokens = this.generationTokens(user.id);
+
+    if (!refToken) {
+      const token = this.tokenRepository.create({
+        token: tokens.refreshToken,
+        user: user.id,
+      });
+
+      await this.tokenRepository.save(token);
+    }
+
+    return this.returnJwt(tokens.accessToken, tokens.refreshToken, user.id);
   }
 
   async register(registerData: RegisterObject) {
@@ -87,7 +95,7 @@ export class AuthService {
     });
 
     if (!currentToken) {
-      await this.tokenRepository.delete({ user:id }); // delete all tokens this user if token isn't valid
+      await this.tokenRepository.delete({ user: id }); // delete all tokens this user if token isn't valid
       throw new HttpException('Not a valid token', HttpStatus.NOT_FOUND);
     }
     const tokens = this.generationTokens(id);
@@ -96,17 +104,7 @@ export class AuthService {
       ...currentToken,
       token: tokens.refreshToken,
     });
-    return {
-      accessToken: tokens.accessToken,
-      refreshToken: this.jwtService.sign(
-        {
-          token: tokens.refreshToken,
-          id: id,
-        },
-        {
-          expiresIn: '365d',
-        },
-      ),
-    };
+
+    return this.returnJwt(tokens.accessToken, tokens.refreshToken, id);
   }
 }

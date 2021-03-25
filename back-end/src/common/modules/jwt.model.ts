@@ -1,5 +1,5 @@
 export interface PayloadAccessJwt {
-  id: number;
+  userId: number;
 };
 
 export interface PayloadRefreshJwt {

@@ -104,7 +104,8 @@ export class BaseService extends AuthService {
       { email, isGoogleAuthorization: false, isVerifiedEmail: true },
       { password: passwordHash },
     );
-    console.log(updateResult)
+    console.log(updateResult);
+    console.log(password);
     const mailReceiver = email;
     const subject = 'Forgot password';
     const text = "We've sent this mail because you forgot your password.";
