@@ -1,4 +1,4 @@
-export class UpdateFeedDto {
-  readonly photo: string;
-  readonly description: string;
-}
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateFeedDto } from './create-feed.dto';
+
+export class UpdateFeedDto extends PartialType(CreateFeedDto) {}

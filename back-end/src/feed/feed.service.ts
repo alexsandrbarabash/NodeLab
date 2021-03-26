@@ -1,36 +1,46 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateFeedDto } from './dto/create-feed.dto';
-import { UpdateFeedDto } from './dto/update-feed.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { join } from 'path';
+import { CreateFeedDto } from './dto/create-feed.dto';
+import { UpdateFeedDto } from './dto/update-feed.dto';
 import { Post } from './entities/post.entity';
 import { deletFile } from '../common/logic/delet.file.helpers';
-import {log} from "util";
+import { LikeDto } from './dto/like.dto';
+import { Profile } from '../profile/entities/profile.entity';
 
 @Injectable()
 export class FeedService {
   constructor(
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
+    @InjectRepository(Profile)
+    private profileRepository: Repository<Profile>,
   ) {}
 
-  getAll() {
-    return this.postRepository.find();
+  getAll(take, skip) {
+    return this.postRepository.find({
+      order: {
+        createAt: 'DESC',
+      },
+      take,
+      skip,
+      relations: ['like'],
+    });
   }
 
   getById(id: number) {
-    return this.postRepository.findOne(id);
+    return this.postRepository.findOne(id, { relations: ['like'] });
   }
 
   create(feedDto: CreateFeedDto, file: Express.Multer.File, userId: number) {
     if (!file) {
       throw new HttpException('Incorrect data', HttpStatus.NOT_ACCEPTABLE);
     }
-    console.log(userId);
+
     const post = this.postRepository.create({
       ...feedDto,
-      user: userId,
+      userId,
       photo: file.filename,
     });
     return this.postRepository.save(post);
@@ -38,6 +48,40 @@ export class FeedService {
 
   remove(id: number) {
     return this.postRepository.delete(id);
+  }
+
+  async like(postId: number, likeDto: LikeDto) {
+    const post = await this.postRepository.findOne(postId, {
+      relations: ['like'],
+    });
+
+    const profile = await this.profileRepository.findOne(likeDto.profileId);
+    let update = true;
+    post.like.forEach((item) => {
+      if (item.id === profile.id) {
+        update = false;
+      }
+    });
+
+    if (update) {
+      post.like.push(profile);
+    }
+
+    return this.postRepository.save(post);
+  }
+
+  async dislike(postId: number, likeDto: LikeDto) {
+    const post = await this.postRepository.findOne(postId, {
+      relations: ['like'],
+    });
+
+    const profile = await this.profileRepository.findOne(likeDto.profileId);
+
+    post.like = post.like.filter((item) => {
+      return item.id !== profile.id;
+    });
+
+    return this.postRepository.save(post);
   }
 
   async update(id: number, feedDto: UpdateFeedDto, photo: Express.Multer.File) {

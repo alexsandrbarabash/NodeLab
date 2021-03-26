@@ -21,7 +21,7 @@ export class Token {
     default: () => 'CURRENT_TIMESTAMP(6)',
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
-  public updatedAt: Date;
+  updatedAt: Date;
 
   @ManyToOne(() => User)
   @JoinColumn()

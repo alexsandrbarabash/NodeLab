@@ -36,13 +36,11 @@ export class ProfileService {
     photo: Express.Multer.File,
     updateProfileDto: UpdateProfileDto,
   ) {
-    console.log(userId)
     const profile = await this.profileRepository.findOne({ user: userId });
 
     let photoObject: { photo?: string };
 
     if (photo) {
-      console.log(profile)
       if (profile.photo !== 'default.jpg') {
 
         const err = await deletFile(

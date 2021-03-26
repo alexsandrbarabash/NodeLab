@@ -81,9 +81,8 @@ export class BaseService extends AuthService {
     return this.createToken(user);
   }
 
-  async verifiedEmail(id: number) {
-    await this.usersRepository.update(id, { isVerifiedEmail: true });
-    return 'Ok';
+  verifiedEmail(id: number) {
+    return this.usersRepository.update(id, { isVerifiedEmail: true });
   }
 
   private createPassword(): string {

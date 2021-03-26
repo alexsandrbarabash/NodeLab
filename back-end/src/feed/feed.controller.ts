@@ -9,20 +9,22 @@ import {
   UseInterceptors,
   UploadedFile,
   Req,
+  Query,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateFeedDto } from './dto/create-feed.dto';
 import { UpdateFeedDto } from './dto/update-feed.dto';
 import { FeedService } from './feed.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 import ExpandedRequest from '../common/modules/respons.model';
+import { LikeDto } from './dto/like.dto';
 
 @Controller('feed')
 export class FeedController {
   constructor(private readonly feedServise: FeedService) {}
 
   @Get()
-  getAll() {
-    return this.feedServise.getAll();
+  getAll(@Query() { take, skip }) {
+    return this.feedServise.getAll(take, skip);
   }
 
   @Get(':id')
@@ -38,13 +40,22 @@ export class FeedController {
     @Body() createFeedDto: CreateFeedDto,
     @Req() { userId }: ExpandedRequest,
   ) {
-    console.log(userId)
     return this.feedServise.create(createFeedDto, file, userId);
   }
 
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.feedServise.remove(id);
+  }
+
+  @Put('/like/:id')
+  like(@Param('id') id: number, @Body() likeDto: LikeDto) {
+    return this.feedServise.like(id, likeDto);
+  }
+
+  @Put('/dislike/:id')
+  dislike(@Param('id') id: number, @Body() likeDto: LikeDto) {
+    return this.feedServise.dislike(id, likeDto);
   }
 
   @Put(':id')
