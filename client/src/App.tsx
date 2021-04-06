@@ -9,16 +9,18 @@ function App() {
     });
     socket.emit(
       "authorization",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsImlhdCI6MTYxNjUyMDU3NH0.AsQNinGnwgtSjnEJnftaSgBLCND9Zv6L7pv7Klgfwaw"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYxNzc0NDY5NSwiZXhwIjoxNjE3NzQ1ODk1fQ.pnEbnC3zZulSYQVxYghTf_wEDEjA_Pv44IQPXSthafo"
     );
 
     socket.on("authorization", function (data: any) {
       console.log("on", data);
-      socket.emit("findAllChat", 12);
     });
 
-    socket.on("findAllChat", (data: any) => {
-      console.log(data);
+    socket.on("UPDATE:LIST", (id: string) => {
+      console.log("List");
+
+      console.log(id);
+      socket.emit("ROOM:ADD-TO-LIST", id);
     });
   }, []);
 
@@ -29,12 +31,26 @@ function App() {
   return (
     <>
       <GoogleLogin
-        clientId="302169626863-c1d4af3h94s4ll4j3p9n46gam133soab.apps.googleusercontent.com"
+        clientId="843111139337-uksj44ivbjjlt0hvuitj8inegvkglgu9.apps.googleusercontent.com"
         buttonText="Login"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
         cookiePolicy={"single_host_origin"}
       />
+      <button
+        onClick={() => {
+          socket.emit("ROOM:CREATE", { title: "Among Ass" });
+        }}
+      >
+        create room
+      </button>
+      <button
+        onClick={() => {
+          socket.emit("ROOM:LIVE", { title: "Among Ass" });
+        }}
+      >
+        room live
+      </button>
     </>
   );
 }

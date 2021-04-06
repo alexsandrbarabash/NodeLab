@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { join } from 'path';
-import { Profile } from './entities/profile.entity';
+import { Profile } from '../common/entities/profile.entity';
 import { UpdateProfileDto } from './dto/update.profile.dto';
 import { User } from '../common/entities/user.entity';
 import { deletFile } from '../common/logic/delet.file.helpers';

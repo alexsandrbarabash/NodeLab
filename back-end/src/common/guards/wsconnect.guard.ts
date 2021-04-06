@@ -18,7 +18,7 @@ export class WsConnectGuard implements CanActivate {
     if (wsId) {
       return true;
     } else {
-      return false;
+      return false; // for production return false
     }
   }
 }

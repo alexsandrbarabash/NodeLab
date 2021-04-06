@@ -2,40 +2,71 @@ import {
   WebSocketGateway,
   SubscribeMessage,
   MessageBody,
+  WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
+import { SendMessageDto } from './dto/send-message.dto';
 import { UseGuards } from '@nestjs/common';
 import { WsConnectGuard } from '../common/guards/wsconnect.guard';
+import { Server, Socket } from 'socket.io';
+import { CreateRoomDto } from './dto/create-room.dto';
 
 @WebSocketGateway()
 @UseGuards(WsConnectGuard)
 export class ChatGateway {
   constructor(private readonly chatService: ChatService) {}
 
-  @SubscribeMessage(' ')
-  create(@MessageBody() createChatDto: CreateChatDto) {
-    return this.chatService.create(createChatDto);
+  @WebSocketServer() server: Server;
+
+  @SubscribeMessage('MESSAGE:SEND')
+  saveMessage(@MessageBody() sendMessageDto: SendMessageDto) {
+    return this.chatService.saveMessage(sendMessageDto);
   }
 
-  @SubscribeMessage('findAllChat')
-  findAll() {
-    return this.chatService.findAll();
+  @SubscribeMessage('ROOM:CREATE')
+  createRoom(
+    @MessageBody() createRoomDto: CreateRoomDto,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return this.chatService.createRoom(this.server, socket, createRoomDto);
   }
 
-  @SubscribeMessage('findOneChat')
-  findOne(@MessageBody() id: number) {
-    return this.chatService.findOne(id);
+  @SubscribeMessage('ROOM:JOIN')
+  joinRoom(@ConnectedSocket() socket: Socket, @MessageBody() roomId: string) {
+    return this.chatService.joinRoom(this.server, socket, roomId);
   }
 
-  @SubscribeMessage('updateChat')
-  update(@MessageBody() updateChatDto: UpdateChatDto) {
-    return this.chatService.update(updateChatDto.id, updateChatDto);
+  @SubscribeMessage('ROOM:ADD-TO-LIST')
+  addRoomToChatList(@ConnectedSocket() socket: Socket, @MessageBody() roomId: string) {
+    return this.chatService.addRoomToChatList(socket, roomId);
   }
 
-  @SubscribeMessage('removeChat')
-  remove(@MessageBody() id: number) {
-    return this.chatService.remove(id);
+  @SubscribeMessage('ROOM:LEFT')
+  lefRoom(@MessageBody() sendMessageDto: SendMessageDto) {
+    return this.chatService.saveMessage(sendMessageDto);
   }
+
+  @SubscribeMessage('DELETE:ROOM')
+  deletRoom(@ConnectedSocket() socket: Socket, roomId: string) {}
+
+  // @SubscribeMessage('create-room')
+  // createRoom(@MessageBody() sendMessageDto: SendMessageDto) {
+  //   console.log('live');
+  //   return this.chatService.saveMessage(sendMessageDto);
+  // }
+  // @SubscribeMessage('findAllChat')
+  // findAll() {
+  //   return this.chatService.findAll();
+  // }
+  //
+  // @SubscribeMessage('findOneChat')
+  // findOne(@MessageBody() id: number) {
+  //   return this.chatService.findOne(id);
+  // }
+  //
+  // @SubscribeMessage('removeChat')
+  // remove(@MessageBody() id: number) {
+  //   return this.chatService.remove(id);
+  // }
 }

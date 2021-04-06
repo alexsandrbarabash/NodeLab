@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../common/entities/user.entity';
-import { Profile } from '../../profile/entities/profile.entity';
+import { Profile } from '../../common/entities/profile.entity';
 
 @Entity()
 export class Post {

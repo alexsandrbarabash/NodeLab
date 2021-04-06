@@ -7,7 +7,7 @@ import { diskStorage } from 'multer';
 import filenameCreator from '../common/logic/filename.helper';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../common/entities/user.entity';
-import { Profile } from './entities/profile.entity';
+import { Profile } from '../common/entities/profile.entity';
 
 @Module({
   imports: [

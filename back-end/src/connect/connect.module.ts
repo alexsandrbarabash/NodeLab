@@ -4,10 +4,11 @@ import { ConnectService } from './connect.service';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WebsocketId } from '../common/entities/websocketId.entity';
+import { Profile } from '../common/entities/profile.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([WebsocketId]),
+    TypeOrmModule.forFeature([WebsocketId, Profile]),
     JwtModule.registerAsync({
       useFactory: () => ({
         secret: process.env.SECRET_KEY,

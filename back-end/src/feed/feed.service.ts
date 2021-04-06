@@ -7,7 +7,7 @@ import { UpdateFeedDto } from './dto/update-feed.dto';
 import { Post } from './entities/post.entity';
 import { deletFile } from '../common/logic/delet.file.helpers';
 import { LikeDto } from './dto/like.dto';
-import { Profile } from '../profile/entities/profile.entity';
+import { Profile } from '../common/entities/profile.entity';
 
 @Injectable()
 export class FeedService {

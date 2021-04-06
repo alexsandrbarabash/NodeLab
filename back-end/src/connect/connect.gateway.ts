@@ -21,9 +21,9 @@ export class ConnectGateway implements OnGatewayDisconnect {
   @SubscribeMessage('authorization')
   authorization(
     @MessageBody() token: string,
-    @ConnectedSocket() { id }: Socket,
+    @ConnectedSocket() socket: Socket,
   ): Promise<WsResponse<null>> {
-    return this.connectService.authorization(token, id);
+    return this.connectService.authorization(socket, token);
   }
 
   public handleDisconnect({ id }: Socket): void {

@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Token } from '../../auth/entities/token.entity';
 import { Post } from '../../feed/entities/post.entity';
-import { Profile } from '../../profile/entities/profile.entity';
+import { Profile } from './profile.entity';
 import { WebsocketId } from './websocketId.entity';
 
 @Entity()
@@ -47,4 +47,5 @@ export class User {
 
   @OneToMany(() => WebsocketId, (WebsocketId) => WebsocketId.id)
   websocketId: WebsocketId;
+
 }

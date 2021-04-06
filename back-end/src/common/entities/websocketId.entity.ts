@@ -3,9 +3,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn, Unique,
+  PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
-import {User} from "./user.entity";
+import { User } from './user.entity';
 
 @Entity()
 @Unique(['websocketId'])
@@ -14,9 +15,12 @@ export class WebsocketId {
   id: number;
 
   @Column()
-  websocketId: string
+  websocketId: string;
 
-  @ManyToOne(() => User)
+  @Column()
+  userId: number;
+
+  @ManyToOne(() => User, { cascade: true })
   @JoinColumn()
   user: number;
 }

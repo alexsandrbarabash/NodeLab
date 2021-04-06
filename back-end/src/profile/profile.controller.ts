@@ -13,7 +13,7 @@ import { UpdateResult } from 'typeorm';
 import { UpdateProfileDto } from './dto/update.profile.dto';
 import ExpandedRequest from '../common/modules/respons.model';
 import { ProfileService } from './profile.service';
-import { Profile } from './entities/profile.entity';
+import { Profile } from '../common/entities/profile.entity';
 
 @Controller('profile')
 export class ProfileController {
