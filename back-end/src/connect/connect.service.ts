@@ -19,37 +19,38 @@ export class ConnectService {
 
   async authorization(soket: Socket, token: string) {
     try {
-      if (token) {
-        const { userId } = this.jwtService.verify<PayloadAccessJwt>(token);
-        const isAuthorized = await this.websocketIdRepository.findOne({
+      if (!token) {
+        return;
+      }
+
+      const { userId } = this.jwtService.verify<PayloadAccessJwt>(token);
+      const isAuthorized = await this.websocketIdRepository.findOne({
+        websocketId: soket.id,
+      });
+
+      if (!isAuthorized) {
+        const websocket = this.websocketIdRepository.create({
           websocketId: soket.id,
+          userId,
         });
 
-        if (!isAuthorized) {
-          const websocket = this.websocketIdRepository.create({
-            websocketId: soket.id,
-            userId,
-          });
+        await this.websocketIdRepository.save(websocket);
 
-          await this.websocketIdRepository.save(websocket);
+        soket.join(`${userId}`);
 
-          soket.join(`${userId}`);
-          console.log('log3');
-          const userProfile = await this.profileRepository.findOne(
-            {
-              user: userId,
-            },
-            { relations: ['profilesRooms'] },
-          );
-          userProfile.profilesRooms.forEach(({ id }) => {
-            soket.join(id);
-          });
+        const { myRooms } = await this.profileRepository.findOne({
+          user: userId,
+        });
 
-          return { event: 'authorization', data: null };
-        }
+        console.log(myRooms)
+
+        JSON.parse(myRooms)?.forEach(({ id }) => {
+          soket.join(id);
+        });
+
+        return { event: 'authorization', data: null };
       }
     } catch (e) {
-      console.log('lox2');
       console.log(e);
     }
   }

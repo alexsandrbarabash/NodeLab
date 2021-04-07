@@ -2,7 +2,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
   ManyToMany,
   OneToMany,
   OneToOne,
@@ -11,7 +10,6 @@ import {
 import { User } from './user.entity';
 import { Post } from '../../feed/entities/post.entity';
 import { Room } from './room.entity';
-import { Message } from '../../chat/entities/message.entity';
 
 @Entity()
 export class Profile {
@@ -34,13 +32,15 @@ export class Profile {
   @ManyToMany(() => Post, (post) => post.id)
   like: Post[];
 
-  @ManyToMany(() => Room, (room) => room.id, { cascade: true })
-  @JoinTable()
+  @Column({ type: 'json', nullable: true })
+  myRooms: string;
+
+  @ManyToMany(() => Room, (room) => room.id)
   profilesRooms: Room[];
 
   @OneToMany(() => Room, (room) => room.id)
   owner: Room;
 
-  @OneToMany(() => Message, (message) => message.id)
-  message: Message;
+  // @OneToMany(() => Message, (message) => message.id)
+  // message: Message;
 }

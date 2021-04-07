@@ -13,7 +13,7 @@ import { FeedModule } from './feed/feed.module';
 import { AuthMiddleware } from './common/middleware/auth.middleware';
 import { ProfileController } from './profile/profile.controller';
 import { FeedController } from './feed/feed.controller';
-import { ChatModule } from './chat/chat.module';
+import { RoomModule } from './room/room.module';
 import { ConnectModule } from './connect/connect.module';
 
 @Module({
@@ -28,7 +28,7 @@ import { ConnectModule } from './connect/connect.module';
     AuthModule,
     ProfileModule,
     FeedModule,
-    ChatModule,
+    RoomModule,
     ConnectModule,
   ],
 })

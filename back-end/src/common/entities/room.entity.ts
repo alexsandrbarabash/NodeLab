@@ -3,12 +3,12 @@ import {
   Entity,
   JoinColumn,
   ManyToMany,
-  OneToMany,
   ManyToOne,
   PrimaryColumn,
+  JoinTable,
 } from 'typeorm';
 import { Profile } from './profile.entity';
-import { Message } from '../../chat/entities/message.entity';
+import { TypeRoom } from '../../room/room.service';
 
 @Entity()
 export class Room {
@@ -19,16 +19,17 @@ export class Room {
   @Column({ nullable: false })
   title: string;
 
-  @Column({ type: 'json', nullable: true})
-  userInRoom: string;
+  @Column()
+  typeRoom: TypeRoom.COMMENT | TypeRoom.CHAT;
 
   @ManyToMany(() => Profile, (profile) => profile.id, { cascade: true })
+  @JoinTable()
   profilesRooms: Profile[];
 
-  @ManyToOne(() => Profile, (profile) => profile.id)
+  @ManyToOne(() => Profile, (profile) => profile.id, { cascade: true })
   @JoinColumn()
   owner: Profile;
 
-  @OneToMany(() => Message, (message) => message.id)
-  messages: Message;
+  // @OneToMany(() => Message, (message) => message.id)
+  // messages: Message;
 }

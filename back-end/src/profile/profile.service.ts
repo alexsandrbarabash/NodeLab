@@ -21,7 +21,6 @@ export class ProfileService {
   }
 
   async createProfile(userId: number) {
-    console.log(userId)
     const user = await this.userRepository.findOne(userId);
     const profile = this.profileRepository.create({
       name: user.email,
