@@ -30,11 +30,9 @@ export class ChatService {
   }
 
   public async createRoom(
-      server: Server,
-      socket: Socket,
+    server: Server,
+    socket: Socket,
     createRoomDto: CreateRoomDto,
-
-
   ) {
     const { user, userId } = await this.websocketIdRepository.findOne(
       {
@@ -43,15 +41,26 @@ export class ChatService {
       { relations: ['user'] },
     );
 
-    const profile = await this.profileRepository.findOne({ user });
+    const profile = await this.profileRepository.findOne(
+      { user },
+      { relations: ['profilesRooms'] },
+    );
 
     const room = this.roomRepository.create({
       ...createRoomDto,
-      profilesRooms: [profile],
+      userInRoom: JSON.stringify([
+        {
+          id: profile.id,
+          photo: profile.photo,
+          name: profile.name,
+          aboutMe: profile.aboutMe,
+        },
+      ]),
       owner: profile,
       id: uuidv4(),
     });
-
+    profile.profilesRooms.push(room);
+    await this.profileRepository.save(profile);
     await this.roomRepository.save(room);
 
     socket.join(room.id.toString());
@@ -73,9 +82,12 @@ export class ChatService {
 
     let userNeedAdd = false;
 
-    const room = await this.roomRepository.findOne({id:roomId}, {
-      relations: ['profile'],
-    });
+    const room = await this.roomRepository.findOne(
+      { id: roomId },
+      {
+        relations: ['profilesRooms'],
+      },
+    );
 
     room.profilesRooms.forEach((item) => {
       if (profile.id === item.id) {

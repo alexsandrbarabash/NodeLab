@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   OneToMany,
   OneToOne,
@@ -33,7 +34,8 @@ export class Profile {
   @ManyToMany(() => Post, (post) => post.id)
   like: Post[];
 
-  @ManyToMany(() => Room, (room) => room.id)
+  @ManyToMany(() => Room, (room) => room.id, { cascade: true })
+  @JoinTable()
   profilesRooms: Room[];
 
   @OneToMany(() => Room, (room) => room.id)

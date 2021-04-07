@@ -2,7 +2,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
   ManyToMany,
   OneToMany,
   ManyToOne,
@@ -20,8 +19,10 @@ export class Room {
   @Column({ nullable: false })
   title: string;
 
+  @Column({ type: 'json', nullable: true})
+  userInRoom: string;
+
   @ManyToMany(() => Profile, (profile) => profile.id, { cascade: true })
-  @JoinTable()
   profilesRooms: Profile[];
 
   @ManyToOne(() => Profile, (profile) => profile.id)

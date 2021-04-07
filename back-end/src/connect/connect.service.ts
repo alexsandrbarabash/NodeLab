@@ -38,10 +38,13 @@ export class ConnectService {
           const userProfile = await this.profileRepository.findOne(
             {
               user: userId,
-            }
+            },
+            { relations: ['profilesRooms'] },
           );
+          userProfile.profilesRooms.forEach(({ id }) => {
+            soket.join(id);
+          });
 
-          console.log(userProfile);
           return { event: 'authorization', data: null };
         }
       }

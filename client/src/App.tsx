@@ -9,7 +9,7 @@ function App() {
     });
     socket.emit(
       "authorization",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYxNzc0NDY5NSwiZXhwIjoxNjE3NzQ1ODk1fQ.pnEbnC3zZulSYQVxYghTf_wEDEjA_Pv44IQPXSthafo"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYxNzgwNTY5MSwiZXhwIjoxNjE3ODA2ODkxfQ.vs6z5Fqu-Wve7iaJYrAvFAcA1GPvrMNU94YY7d2rCs4"
     );
 
     socket.on("authorization", function (data: any) {
