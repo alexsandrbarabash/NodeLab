@@ -7,6 +7,7 @@ import { Profile } from '../common/entities/profile.entity';
 import { Server, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateRoomDto } from './dto/create-room.dto';
+import { ProfileRoom } from '../common/entities/room-profile.entity';
 
 export enum TypeRoom {
   CHAT = 'CHAT',
@@ -21,24 +22,23 @@ enum ActionRoom {
 @Injectable()
 export class RoomService {
   constructor(
-    @InjectRepository(Profile)
-    private profileRepository: Repository<Profile>,
     @InjectRepository(WebsocketId)
     private websocketIdRepository: Repository<WebsocketId>,
     @InjectRepository(Room)
     private roomRepository: Repository<Room>,
+    @InjectRepository(Profile)
+    private profileRepository: Repository<Profile>,
+    @InjectRepository(ProfileRoom)
+    private profileRoomRepository: Repository<ProfileRoom>,
   ) {}
 
   private addRoomToProfile(profile: Profile, room: Room) {
-    const myRooms = JSON.parse(profile.myRooms);
+    const newUserInRoom = this.profileRoomRepository.create({
+      profile: profile,
+      room: room,
+    });
 
-    if (myRooms) {
-      myRooms.push({ id: room.id });
-      profile.myRooms = JSON.stringify(myRooms);
-    } else {
-      profile.myRooms = JSON.stringify([{ id: room.id }]);
-    }
-    return this.profileRepository.save(profile);
+    return this.profileRoomRepository.save(newUserInRoom);
   }
 
   private async getProfileFromSocket(
@@ -66,12 +66,8 @@ export class RoomService {
   ) {
     const { profile, userId } = await this.getProfileFromSocket(socket);
 
-    const whetherAddOwner =
-      createRoomDto.typeRoom === TypeRoom.CHAT ? [profile] : [];
-
     const room = this.roomRepository.create({
       ...createRoomDto,
-      profilesRooms: whetherAddOwner,
       owner: profile,
       id: uuidv4(),
     });
@@ -88,14 +84,25 @@ export class RoomService {
   }
 
   public async deleteRoom(socket: Socket, roomId: string) {
-    const { profile } = await this.getProfileFromSocket(socket);
+    const { profile, userId } = await this.getProfileFromSocket(socket);
     const room = await this.roomRepository.findOne(
       { id: roomId, owner: profile },
       { relations: ['owner', 'profilesRooms'] },
     );
+    socket.leave(roomId);
 
-    if (room.owner.id !== profile.id) {
+    if (room.owner.id === profile.id) {
+      await this.profileRoomRepository.delete({ roomId });
+      await this.roomRepository.delete(room);
+      return socket
+        .to(roomId)
+        .emit('UPDATE:LIST', { id: roomId, action: ActionRoom.DELETE });
     }
+
+    await this.profileRoomRepository.delete({ roomId, profileId: profile.id });
+    return socket
+      .to(userId.toString())
+      .emit('UPDATE:LIST', { id: roomId, action: ActionRoom.DELETE });
   }
 
   public async joinRoom(socket: Socket, roomId: string) {
@@ -105,41 +112,24 @@ export class RoomService {
     }
 
     socket.join(roomId);
+
     if (room.typeRoom === TypeRoom.COMMENT) {
       return;
     }
 
     const { profile, userId } = await this.getProfileFromSocket(socket);
 
-    let userNeedAdd = false;
-
-    room.profilesRooms.forEach((item) => {
-      if (profile.id === item.id) {
-        userNeedAdd = true;
-      }
+    const userNeedAdd = await this.profileRoomRepository.findOne({
+      profileId: profile.id,
+      roomId,
     });
 
     if (!userNeedAdd) {
-      room.profilesRooms.push(profile);
-
-      await this.roomRepository.save(room);
       await this.addRoomToProfile(profile, room);
 
       socket
         .to(userId.toString())
         .emit('UPDATE:LIST', { id: roomId, action: ActionRoom.ADD });
     }
-  }
-
-  public async leftRoom(socket: Socket, roomId: string) {
-    socket.leave(roomId);
-
-    const { userId } = await this.websocketIdRepository.findOne({
-      websocketId: socket.id,
-    });
-
-    socket
-      .to(userId.toString())
-      .emit('UPDATE:LIST', { id: roomId, action: ActionRoom.DELETE });
   }
 }

@@ -6,6 +6,7 @@ import { PayloadAccessJwt } from '../common/modules/jwt.model';
 import { WebsocketId } from '../common/entities/websocketId.entity';
 import { Profile } from '../common/entities/profile.entity';
 import { Socket } from 'socket.io';
+import { ProfileRoom } from '../common/entities/room-profile.entity';
 
 @Injectable()
 export class ConnectService {
@@ -15,6 +16,8 @@ export class ConnectService {
     private websocketIdRepository: Repository<WebsocketId>,
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
+    @InjectRepository(ProfileRoom)
+    private profileRoomRepository: Repository<ProfileRoom>,
   ) {}
 
   async authorization(soket: Socket, token: string) {
@@ -38,14 +41,17 @@ export class ConnectService {
 
         soket.join(`${userId}`);
 
-        const { myRooms } = await this.profileRepository.findOne({
+        const { id } = await this.profileRepository.findOne({
           user: userId,
         });
 
-        console.log(myRooms)
+        const myRooms = await this.profileRoomRepository.find({
+          where: { profileId: id },
+          select: ['roomId'],
+        });
 
-        JSON.parse(myRooms)?.forEach(({ id }) => {
-          soket.join(id);
+        myRooms.forEach((item) => {
+          soket.join(item.roomId);
         });
 
         return { event: 'authorization', data: null };

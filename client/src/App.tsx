@@ -12,7 +12,7 @@ function App() {
     });
     socket.emit(
       "authorization",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYxNzgzNjIzNCwiZXhwIjoxNjE3ODM3NDM0fQ.sK3W6cjMMEES-FhM1biLU7Vn3q1orB0NtgG4hEoRGso"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYxNzkyMjA0NCwiZXhwIjoxNjE3OTIzMjQ0fQ.mqCNkgh7kYc7DuoECoOCFDmzzVkg1CRc-CoN8Vuw_Cg"
     );
 
     socket.on("authorization", function (data: any) {

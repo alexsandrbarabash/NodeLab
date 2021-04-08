@@ -2,13 +2,13 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   PrimaryColumn,
-  JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { Profile } from './profile.entity';
 import { TypeRoom } from '../../room/room.service';
+import { ProfileRoom } from './room-profile.entity';
 
 @Entity()
 export class Room {
@@ -22,9 +22,8 @@ export class Room {
   @Column()
   typeRoom: TypeRoom.COMMENT | TypeRoom.CHAT;
 
-  @ManyToMany(() => Profile, (profile) => profile.id, { cascade: true })
-  @JoinTable()
-  profilesRooms: Profile[];
+  @OneToMany(() => ProfileRoom, (profileRoom) => profileRoom.roomId)
+  profilesRooms: ProfileRoom;
 
   @ManyToOne(() => Profile, (profile) => profile.id, { cascade: true })
   @JoinColumn()

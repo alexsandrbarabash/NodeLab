@@ -10,6 +10,7 @@ import {
 import { User } from './user.entity';
 import { Post } from '../../feed/entities/post.entity';
 import { Room } from './room.entity';
+import { ProfileRoom } from './room-profile.entity';
 
 @Entity()
 export class Profile {
@@ -32,11 +33,11 @@ export class Profile {
   @ManyToMany(() => Post, (post) => post.id)
   like: Post[];
 
-  @Column({ type: 'json', nullable: true })
-  myRooms: string;
+  // @Column({ type: 'json', nullable: true })
+  // myRooms: string;
 
-  @ManyToMany(() => Room, (room) => room.id)
-  profilesRooms: Room[];
+  @OneToMany(() => ProfileRoom, (profileRoom) => profileRoom.profileId)
+  profilesRooms: ProfileRoom;
 
   @OneToMany(() => Room, (room) => room.id)
   owner: Room;

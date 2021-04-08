@@ -39,11 +39,6 @@ export class RoomGateway {
     return this.roomService.addRoomToChatList(socket, roomId);
   }
 
-  @SubscribeMessage('ROOM:LEFT')
-  lefRoom(@ConnectedSocket() socket: Socket, @MessageBody() id: string) {
-    return this.roomService.leftRoom(socket, id);
-  }
-
   @SubscribeMessage('ROOM:DELETE')
   deleteRoom(@ConnectedSocket() socket: Socket, @MessageBody() roomId: string) {
     return this.roomService.deleteRoom(socket, roomId);
