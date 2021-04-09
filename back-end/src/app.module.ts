@@ -15,6 +15,7 @@ import { ProfileController } from './profile/profile.controller';
 import { FeedController } from './feed/feed.controller';
 import { RoomModule } from './room/room.module';
 import { ConnectModule } from './connect/connect.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ConnectModule } from './connect/connect.module';
     FeedModule,
     RoomModule,
     ConnectModule,
+    MessageModule,
   ],
 })
 

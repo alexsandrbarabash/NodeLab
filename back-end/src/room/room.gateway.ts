@@ -28,7 +28,7 @@ export class RoomGateway {
 
   @SubscribeMessage('ROOM:JOIN')
   joinRoom(@ConnectedSocket() socket: Socket, @MessageBody() roomId: string) {
-    return this.roomService.joinRoom(socket, roomId);
+    return this.roomService.joinRoom(this.server, socket, roomId);
   }
 
   @SubscribeMessage('ROOM:ADD-TO-LIST')
@@ -41,6 +41,6 @@ export class RoomGateway {
 
   @SubscribeMessage('ROOM:DELETE')
   deleteRoom(@ConnectedSocket() socket: Socket, @MessageBody() roomId: string) {
-    return this.roomService.deleteRoom(socket, roomId);
+    return this.roomService.deleteRoom(this.server, socket, roomId);
   }
 }

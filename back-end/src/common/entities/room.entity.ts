@@ -9,6 +9,7 @@ import {
 import { Profile } from './profile.entity';
 import { TypeRoom } from '../../room/room.service';
 import { ProfileRoom } from './room-profile.entity';
+import { Message } from '../../message/entities/message.entity';
 
 @Entity()
 export class Room {
@@ -29,6 +30,6 @@ export class Room {
   @JoinColumn()
   owner: Profile;
 
-  // @OneToMany(() => Message, (message) => message.id)
-  // messages: Message;
+  @OneToMany(() => Message, (message) => message.id)
+  messages: Message;
 }

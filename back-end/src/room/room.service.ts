@@ -55,11 +55,11 @@ export class RoomService {
     return { profile, userId };
   }
 
-  public addRoomToChatList(socket: Socket, roomId: string) {
+  addRoomToChatList(socket: Socket, roomId: string) {
     socket.join(roomId);
   }
 
-  public async createRoom(
+  async createRoom(
     server: Server,
     socket: Socket,
     createRoomDto: CreateRoomDto,
@@ -83,7 +83,7 @@ export class RoomService {
     return this.addRoomToProfile(profile, room);
   }
 
-  public async deleteRoom(socket: Socket, roomId: string) {
+  async deleteRoom(server: Server, socket: Socket, roomId: string) {
     const { profile, userId } = await this.getProfileFromSocket(socket);
     const room = await this.roomRepository.findOne(
       { id: roomId, owner: profile },
@@ -94,18 +94,15 @@ export class RoomService {
     if (room.owner.id === profile.id) {
       await this.profileRoomRepository.delete({ roomId });
       await this.roomRepository.delete(room);
-      return socket
-        .to(roomId)
-        .emit('UPDATE:LIST', { id: roomId, action: ActionRoom.DELETE });
     }
 
     await this.profileRoomRepository.delete({ roomId, profileId: profile.id });
-    return socket
+    return server
       .to(userId.toString())
       .emit('UPDATE:LIST', { id: roomId, action: ActionRoom.DELETE });
   }
 
-  public async joinRoom(socket: Socket, roomId: string) {
+  async joinRoom(server: Server, socket: Socket, roomId: string) {
     const room = await this.roomRepository.findOne({ id: roomId });
     if (!room) {
       return;
@@ -127,7 +124,7 @@ export class RoomService {
     if (!userNeedAdd) {
       await this.addRoomToProfile(profile, room);
 
-      socket
+      server
         .to(userId.toString())
         .emit('UPDATE:LIST', { id: roomId, action: ActionRoom.ADD });
     }
