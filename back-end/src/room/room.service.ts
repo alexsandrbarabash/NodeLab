@@ -8,6 +8,7 @@ import { Server, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { ProfileRoom } from '../common/entities/room-profile.entity';
+import { AddAnotherUserDto } from './dto/add-another-user.dto';
 
 export enum TypeRoom {
   CHAT = 'CHAT',
@@ -66,8 +67,8 @@ export class RoomService {
   ) {
     const { profile, userId } = await this.getProfileFromSocket(socket);
     // only chat
-    if(createRoomDto.typeRoom === TypeRoom.COMMENT) {
-      return ;
+    if (createRoomDto.typeRoom === TypeRoom.COMMENT) {
+      return;
     }
 
     const room = this.roomRepository.create({
@@ -83,6 +84,7 @@ export class RoomService {
     server
       .to(userId.toString())
       .emit('UPDATE:LIST', { id: room.id, action: ActionRoom.ADD });
+    server.to(room.id).emit('UPDATE:ROOM');
 
     return this.addRoomToProfile(profile, room);
   }
@@ -101,6 +103,7 @@ export class RoomService {
     }
 
     await this.profileRoomRepository.delete({ roomId, profileId: profile.id });
+    server.to(room.id).emit('UPDATE:ROOM');
     return server
       .to(userId.toString())
       .emit('UPDATE:LIST', { id: roomId, action: ActionRoom.DELETE });
@@ -131,6 +134,33 @@ export class RoomService {
       server
         .to(userId.toString())
         .emit('UPDATE:LIST', { id: roomId, action: ActionRoom.ADD });
+      server.to(room.id).emit('UPDATE:ROOM');
     }
+  }
+
+  async addAnotherUser(
+    server: Server,
+    socket: Socket,
+    { roomId, anotherProfileId }: AddAnotherUserDto,
+  ) {
+    const userNeedAdd = await this.profileRoomRepository.findOne({
+      profileId: anotherProfileId,
+      roomId: roomId,
+    });
+
+    if (userNeedAdd) {
+      return;
+    }
+
+    const profile = await this.profileRepository.findOne(anotherProfileId);
+
+    const room = await this.roomRepository.findOne(roomId);
+
+    await this.addRoomToProfile(profile, room);
+
+    socket
+      .to(profile.userId.toString())
+      .emit('UPDATE:LIST', { id: roomId, action: ActionRoom.ADD });
+    server.to(room.id).emit('UPDATE:ROOM');
   }
 }

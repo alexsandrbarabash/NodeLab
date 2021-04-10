@@ -10,6 +10,7 @@ import { UseGuards } from '@nestjs/common';
 import { WsConnectGuard } from '../common/guards/wsconnect.guard';
 import { Server, Socket } from 'socket.io';
 import { CreateRoomDto } from './dto/create-room.dto';
+import { AddAnotherUserDto } from './dto/add-another-user.dto';
 
 @WebSocketGateway()
 @UseGuards(WsConnectGuard)
@@ -29,6 +30,18 @@ export class RoomGateway {
   @SubscribeMessage('ROOM:JOIN')
   joinRoom(@ConnectedSocket() socket: Socket, @MessageBody() roomId: string) {
     return this.roomService.joinRoom(this.server, socket, roomId);
+  }
+
+  @SubscribeMessage('ROOM:ADD-ANOTHER-USER')
+  addAnotherUser(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() addAnotherUserDto: AddAnotherUserDto,
+  ) {
+    return this.roomService.addAnotherUser(
+      this.server,
+      socket,
+      addAnotherUserDto,
+    );
   }
 
   @SubscribeMessage('ROOM:ADD-TO-LIST')
