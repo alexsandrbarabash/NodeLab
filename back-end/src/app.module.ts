@@ -18,6 +18,8 @@ import { ConnectModule } from './connect/connect.module';
 import { MessageModule } from './message/message.module';
 import { ChatModule } from './chat/chat.module';
 import { ChatController } from './chat/chat.controller';
+import { StatisticsModule } from './statistics/statistics.module';
+import { StatisticsController } from './statistics/statistics.controller';
 
 @Module({
   imports: [
@@ -35,17 +37,23 @@ import { ChatController } from './chat/chat.controller';
     ConnectModule,
     MessageModule,
     ChatModule,
+    StatisticsModule,
   ],
 })
 
-// export class AppModule {}
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes(ProfileController, FeedController, ChatController, {
-        path: 'auth/verified-email',
-        method: RequestMethod.PUT,
-      });
+      .forRoutes(
+        ProfileController,
+        FeedController,
+        ChatController,
+        StatisticsController,
+        {
+          path: 'auth/verified-email',
+          method: RequestMethod.PUT,
+        },
+      );
   }
 }

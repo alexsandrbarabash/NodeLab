@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { join } from 'path';
 import { CreateFeedDto } from './dto/create-feed.dto';
 import { UpdateFeedDto } from './dto/update-feed.dto';
-import { Post } from './entities/post.entity';
+import { Post } from '../common/entities/post.entity';
 import { deletFile } from '../common/logic/delet.file.helpers';
 import { LikeDto } from './dto/like.dto';
 import { Profile } from '../common/entities/profile.entity';

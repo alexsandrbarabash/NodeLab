@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { Post } from '../../feed/entities/post.entity';
+import { Post } from './post.entity';
 import { Room } from './room.entity';
 import { ProfileRoom } from './room-profile.entity';
 import { Message } from './message.entity';

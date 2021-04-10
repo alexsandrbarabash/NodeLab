@@ -11,7 +11,7 @@ import { Profile } from './profile.entity';
 import { TypeRoom } from '../../room/room.service';
 import { ProfileRoom } from './room-profile.entity';
 import { Message } from './message.entity';
-import { Post } from '../../feed/entities/post.entity';
+import { Post } from './post.entity';
 
 @Entity()
 export class Room {
