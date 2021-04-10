@@ -6,7 +6,6 @@ import { CreateFeedDto } from './dto/create-feed.dto';
 import { UpdateFeedDto } from './dto/update-feed.dto';
 import { Post } from '../common/entities/post.entity';
 import { deletFile } from '../common/logic/delet.file.helpers';
-import { LikeDto } from './dto/like.dto';
 import { Profile } from '../common/entities/profile.entity';
 import { Room } from '../common/entities/room.entity';
 import { TypeRoom } from '../room/room.service';
@@ -69,40 +68,6 @@ export class FeedService {
 
   remove(id: number) {
     return this.postRepository.delete(id);
-  }
-
-  async like(postId: number, likeDto: LikeDto) {
-    const post = await this.postRepository.findOne(postId, {
-      relations: ['like'],
-    });
-
-    const profile = await this.profileRepository.findOne(likeDto.profileId);
-    let update = true;
-    post.like.forEach((item) => {
-      if (item.id === profile.id) {
-        update = false;
-      }
-    });
-
-    if (update) {
-      post.like.push(profile);
-    }
-
-    return this.postRepository.save(post);
-  }
-
-  async dislike(postId: number, likeDto: LikeDto) {
-    const post = await this.postRepository.findOne(postId, {
-      relations: ['like'],
-    });
-
-    const profile = await this.profileRepository.findOne(likeDto.profileId);
-
-    post.like = post.like.filter((item) => {
-      return item.id !== profile.id;
-    });
-
-    return this.postRepository.save(post);
   }
 
   async update(id: number, feedDto: UpdateFeedDto, photo: Express.Multer.File) {

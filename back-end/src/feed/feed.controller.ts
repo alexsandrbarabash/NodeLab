@@ -16,7 +16,6 @@ import { CreateFeedDto } from './dto/create-feed.dto';
 import { UpdateFeedDto } from './dto/update-feed.dto';
 import { FeedService } from './feed.service';
 import ExpandedRequest from '../common/modules/respons.model';
-import { LikeDto } from './dto/like.dto';
 
 @Controller('feed')
 export class FeedController {
@@ -46,16 +45,6 @@ export class FeedController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.feedServise.remove(id);
-  }
-
-  @Put('/like/:id')
-  like(@Param('id') id: number, @Body() likeDto: LikeDto) {
-    return this.feedServise.like(id, likeDto);
-  }
-
-  @Put('/dislike/:id')
-  dislike(@Param('id') id: number, @Body() likeDto: LikeDto) {
-    return this.feedServise.dislike(id, likeDto);
   }
 
   @Put(':id')
