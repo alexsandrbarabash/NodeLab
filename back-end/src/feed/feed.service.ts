@@ -8,6 +8,9 @@ import { Post } from './entities/post.entity';
 import { deletFile } from '../common/logic/delet.file.helpers';
 import { LikeDto } from './dto/like.dto';
 import { Profile } from '../common/entities/profile.entity';
+import { Room } from '../common/entities/room.entity';
+import { TypeRoom } from '../room/room.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class FeedService {
@@ -16,6 +19,8 @@ export class FeedService {
     private postRepository: Repository<Post>,
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
+    @InjectRepository(Room)
+    private roomRepository: Repository<Room>,
   ) {}
 
   getAll(take, skip) {
@@ -25,7 +30,7 @@ export class FeedService {
       },
       take,
       skip,
-      relations: ['like'],
+      relations: ['like', 'profile'],
     });
   }
 
@@ -33,16 +38,32 @@ export class FeedService {
     return this.postRepository.findOne(id, { relations: ['like'] });
   }
 
-  create(feedDto: CreateFeedDto, file: Express.Multer.File, userId: number) {
+  async create(
+    feedDto: CreateFeedDto,
+    file: Express.Multer.File,
+    userId: number,
+  ) {
     if (!file) {
       throw new HttpException('Incorrect data', HttpStatus.NOT_ACCEPTABLE);
     }
+    const profile = await this.profileRepository.findOne({ userId });
+
+    const comments = this.roomRepository.create({
+      id: uuidv4(),
+      title: '',
+      typeRoom: TypeRoom.COMMENT,
+      owner: profile,
+    });
+
+    await this.roomRepository.save(comments);
 
     const post = this.postRepository.create({
       ...feedDto,
-      userId,
+      profileId: profile.id,
       photo: file.filename,
+      comments,
     });
+
     return this.postRepository.save(post);
   }
 

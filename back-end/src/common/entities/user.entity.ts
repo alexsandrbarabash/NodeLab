@@ -8,7 +8,6 @@ import {
   Unique,
 } from 'typeorm';
 import { Token } from '../../auth/entities/token.entity';
-import { Post } from '../../feed/entities/post.entity';
 import { Profile } from './profile.entity';
 import { WebsocketId } from './websocketId.entity';
 
@@ -38,9 +37,6 @@ export class User {
 
   @OneToMany(() => Token, (Token) => Token.token)
   token: Token;
-
-  @OneToMany(() => Post, (Post) => Post.id)
-  post: Post;
 
   @OneToOne(() => Profile, (Profile) => Profile.id)
   profile: Profile;

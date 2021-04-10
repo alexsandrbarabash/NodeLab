@@ -51,7 +51,7 @@ export class RoomService {
       { relations: ['user'] },
     );
 
-    const profile = await this.profileRepository.findOne({ user });
+    const profile = await this.profileRepository.findOne({ userId });
     return { profile, userId };
   }
 
@@ -65,6 +65,10 @@ export class RoomService {
     createRoomDto: CreateRoomDto,
   ) {
     const { profile, userId } = await this.getProfileFromSocket(socket);
+    // only chat
+    if(createRoomDto.typeRoom === TypeRoom.COMMENT) {
+      return ;
+    }
 
     const room = this.roomRepository.create({
       ...createRoomDto,

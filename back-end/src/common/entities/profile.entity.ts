@@ -11,7 +11,7 @@ import { User } from './user.entity';
 import { Post } from '../../feed/entities/post.entity';
 import { Room } from './room.entity';
 import { ProfileRoom } from './room-profile.entity';
-import { Message } from '../../message/entities/message.entity';
+import { Message } from './message.entity';
 
 @Entity()
 export class Profile {
@@ -27,6 +27,9 @@ export class Profile {
   @Column({ default: 'default.jpg' })
   photo: string;
 
+  @Column({nullable: true})
+  userId: number;
+
   @OneToOne(() => User, (User) => User.id)
   @JoinColumn()
   user: number;
@@ -34,6 +37,8 @@ export class Profile {
   @ManyToMany(() => Post, (post) => post.id)
   like: Post[];
 
+  @OneToMany(() => Post, (Post) => Post.id)
+  post: Post;
 
   @OneToMany(() => ProfileRoom, (profileRoom) => profileRoom.profileId)
   profilesRooms: ProfileRoom;

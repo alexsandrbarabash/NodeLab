@@ -17,14 +17,14 @@ export class ProfileService {
   ) {}
 
   getProfile(userId: number) {
-    return this.profileRepository.findOne({ user: userId });
+    return this.profileRepository.findOne({ userId });
   }
 
   async createProfile(userId: number) {
     const user = await this.userRepository.findOne(userId);
     const profile = this.profileRepository.create({
       name: user.email,
-      user: userId,
+      userId,
     });
 
     return this.profileRepository.save(profile);
@@ -35,13 +35,11 @@ export class ProfileService {
     photo: Express.Multer.File,
     updateProfileDto: UpdateProfileDto,
   ) {
-    const profile = await this.profileRepository.findOne({ user: userId });
-
     let photoObject: { photo?: string };
 
     if (photo) {
+      const profile = await this.profileRepository.findOne({ userId });
       if (profile.photo !== 'default.jpg') {
-
         const err = await deletFile(
           join(__dirname, '..', '..', 'public', 'feed', profile.photo),
         );
@@ -61,8 +59,6 @@ export class ProfileService {
       ...photoObject,
     };
 
-
-
     if (
       updateObject &&
       Object.keys(updateObject).length === 0 &&
@@ -71,8 +67,6 @@ export class ProfileService {
       throw new HttpException('Incorrect data', HttpStatus.NOT_ACCEPTABLE);
     }
 
-
-
-    return this.profileRepository.update({ user: userId }, updateObject);
+    return this.profileRepository.update({ userId }, updateObject);
   }
 }

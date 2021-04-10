@@ -5,11 +5,13 @@ import {
   ManyToOne,
   PrimaryColumn,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import { Profile } from './profile.entity';
 import { TypeRoom } from '../../room/room.service';
 import { ProfileRoom } from './room-profile.entity';
-import { Message } from '../../message/entities/message.entity';
+import { Message } from './message.entity';
+import { Post } from '../../feed/entities/post.entity';
 
 @Entity()
 export class Room {
@@ -31,5 +33,8 @@ export class Room {
   owner: Profile;
 
   @OneToMany(() => Message, (message) => message.id)
-  messages: Message;
+  messagesRoom: Message;
+
+  @OneToOne(() => Post, (post) => post.id)
+  comments: Post;
 }

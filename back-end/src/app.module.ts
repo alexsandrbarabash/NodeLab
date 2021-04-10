@@ -16,6 +16,8 @@ import { FeedController } from './feed/feed.controller';
 import { RoomModule } from './room/room.module';
 import { ConnectModule } from './connect/connect.module';
 import { MessageModule } from './message/message.module';
+import { ChatModule } from './chat/chat.module';
+import { ChatController } from './chat/chat.controller';
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { MessageModule } from './message/message.module';
     RoomModule,
     ConnectModule,
     MessageModule,
+    ChatModule,
   ],
 })
 
@@ -40,7 +43,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes(ProfileController, FeedController, {
+      .forRoutes(ProfileController, FeedController, ChatController, {
         path: 'auth/verified-email',
         method: RequestMethod.PUT,
       });

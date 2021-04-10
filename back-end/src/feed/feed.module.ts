@@ -8,10 +8,11 @@ import { MulterModule } from '@nestjs/platform-express';
 import imgValidator from '../common/logic/img.validator';
 import { diskStorage } from 'multer';
 import filenameCreator from '../common/logic/filename.helper';
+import { Room } from '../common/entities/room.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Post, Profile]),
+    TypeOrmModule.forFeature([Post, Profile, Room]),
     MulterModule.register({
       fileFilter: imgValidator,
       storage: diskStorage({

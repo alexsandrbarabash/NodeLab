@@ -4,7 +4,7 @@ import { MessageGateway } from './message.gateway';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Room } from '../common/entities/room.entity';
 import { Profile } from '../common/entities/profile.entity';
-import { Message } from './entities/message.entity';
+import { Message } from '../common/entities/message.entity';
 import { WebsocketId } from '../common/entities/websocketId.entity';
 
 @Module({

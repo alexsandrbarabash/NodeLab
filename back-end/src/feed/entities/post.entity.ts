@@ -6,10 +6,11 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../../common/entities/user.entity';
 import { Profile } from '../../common/entities/profile.entity';
+import { Room } from '../../common/entities/room.entity';
 
 @Entity()
 export class Post {
@@ -29,13 +30,20 @@ export class Post {
   createAt: Date;
 
   @Column({ nullable: false })
-  userId: number;
+  profileId: number;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => Profile, { nullable: false })
   @JoinColumn()
-  user: number;
+  profile: Profile;
 
-  @ManyToMany((type) => Profile, (profile) => profile.id, { cascade: true })
+  @ManyToMany(() => Profile, (profile) => profile.id, { cascade: true })
   @JoinTable()
   like: Profile[];
+
+  @Column()
+  commentsId: string;
+
+  @OneToOne(() => Room, (room) => room.id)
+  @JoinColumn()
+  comments: Room;
 }

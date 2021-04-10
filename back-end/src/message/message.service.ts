@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Room } from '../common/entities/room.entity';
 import { Profile } from '../common/entities/profile.entity';
-import { Message } from './entities/message.entity';
+import { Message } from '../common/entities/message.entity';
 import { Server } from 'socket.io';
 
 @Injectable()
