@@ -23,7 +23,7 @@ export class MessageService {
     await this.messageRepository.save(message);
 
     server
-      .to(createMessageDto.roomId)
+      .to(createMessageDto.messagesRoomId)
       .emit('MESSAGE:SAVE', createMessageDto.message);
   }
 }

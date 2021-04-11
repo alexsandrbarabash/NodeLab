@@ -91,10 +91,12 @@ export class RoomService {
 
   async deleteRoom(server: Server, socket: Socket, roomId: string) {
     const { profile, userId } = await this.getProfileFromSocket(socket);
+
     const room = await this.roomRepository.findOne(
       { id: roomId, owner: profile },
-      { relations: ['owner', 'profilesRooms'] },
+      { relations: ['owner'] },
     );
+    console.log(room);
     socket.leave(roomId);
 
     if (room.owner.id === profile.id) {

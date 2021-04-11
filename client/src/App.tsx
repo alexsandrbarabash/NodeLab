@@ -12,7 +12,7 @@ function App() {
     });
     socket.emit(
       "authorization",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYxODA4Mjg4MiwiZXhwIjoxNjE4MDg0MDgyfQ.8IFpTof65Furxr43hMMDhBzVXo0uKof70GtBt5iv05w"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYxODE2NDY4NywiZXhwIjoxNjE4MTY1ODg3fQ.KIGB6JGBlz8H2sGzf_ydwjCJJuoAFAAWMN-OlhxpwnM"
     );
 
     socket.on("authorization", function (data: any) {
@@ -60,6 +60,17 @@ function App() {
       <button
         onClick={() => {
           socket.emit("ROOM:DELETE", roomId);
+        }}
+      >
+        delete live
+      </button>
+      <button
+        onClick={() => {
+          socket.emit("MESSAGE:CREATE", {
+            messagesRoomId: roomId,
+            message: "sdfs",
+            profileId: 1,
+          });
         }}
       >
         delete live

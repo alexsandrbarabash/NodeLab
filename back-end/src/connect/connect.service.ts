@@ -42,7 +42,7 @@ export class ConnectService {
         soket.join(`${userId}`);
 
         const { id } = await this.profileRepository.findOne({
-          user: userId,
+          userId,
         });
 
         const myRooms = await this.profileRoomRepository.find({

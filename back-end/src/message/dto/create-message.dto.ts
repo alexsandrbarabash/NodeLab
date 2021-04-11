@@ -1,5 +1,5 @@
 export class CreateMessageDto {
-  roomId: string;
+  messagesRoomId: string;
   message: string;
   profileId: number;
 }

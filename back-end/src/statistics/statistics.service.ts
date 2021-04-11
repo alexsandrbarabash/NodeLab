@@ -32,6 +32,7 @@ export class StatisticsService {
     postForWeek.forEach((item) => {
       if (item.like.length >= numberOfLikes) {
         bestPost = item;
+        numberOfLikes = item.like.length;
       }
     });
 
